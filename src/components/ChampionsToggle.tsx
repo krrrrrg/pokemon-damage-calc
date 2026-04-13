@@ -15,12 +15,12 @@ const STAT_SHORT: Record<string, string> = {
 };
 
 const STAT_COLORS: Record<string, string> = {
-  hp: "#f44336",
-  atk: "#ff9800",
-  def: "#ffd600",
-  spa: "#42a5f5",
-  spd: "#66bb6a",
-  spe: "#ec407a",
+  hp: "#f03830",
+  atk: "#f08030",
+  def: "#f8d030",
+  spa: "#6890f0",
+  spd: "#78c850",
+  spe: "#f85888",
 };
 
 export default function ChampionsToggle({
@@ -59,30 +59,28 @@ export default function ChampionsToggle({
   const evTotal = Object.values(pokemon.evs).reduce((a, b) => a + b, 0);
 
   return (
-    <div className="text-[10px] px-2 py-2 rounded-md" style={{ background: "rgba(69,123,157,0.1)", border: "1.5px solid rgba(69,123,157,0.3)" }}>
+    <div className="text-xs px-2 py-2" style={{ background: "#f0f4f8", border: "2px solid #5080c0" }}>
       <div className="flex items-center justify-between mb-1.5">
-        <div className="flex items-center gap-1.5">
-          <span className="font-bold" style={{ color: "var(--ds-accent-blue)" }}>포케 챔피언스</span>
-        </div>
-        <span className={`font-mono font-bold ${evTotal > 66 ? "text-red-600" : ""}`} style={{ color: evTotal > 66 ? undefined : "var(--ds-accent-blue)" }}>
+        <span style={{ color: "#5080c0" }}>포케 챔피언스</span>
+        <span className={evTotal > 66 ? "text-red-600" : ""} style={{ color: evTotal > 66 ? undefined : "#5080c0" }}>
           {evTotal}/66
         </span>
       </div>
 
-      <div className="text-[9px] opacity-50 mb-2 leading-relaxed">
+      <div className="text-[10px] opacity-50 mb-2 leading-relaxed">
         IV 31 고정 / EV 0~32 (총합 66) / 1포인트 = 스탯 +1
       </div>
 
       <div className="flex gap-1.5 mb-2">
         <button
-          className="ds-btn ds-btn-sm"
+          className="pixel-btn-green pixel-btn-sm"
           onClick={convertToChampions}
           title="본편 노력치 -> 포챔스 포인트 변환"
         >
           본편 &gt; 포챔스
         </button>
         <button
-          className="ds-btn ds-btn-sm"
+          className="pixel-btn-green pixel-btn-sm"
           onClick={convertToStandard}
           title="포챔스 포인트 -> 본편 노력치 변환"
         >
@@ -94,8 +92,8 @@ export default function ChampionsToggle({
       <div className="grid grid-cols-6 gap-1">
         {(["hp", "atk", "def", "spa", "spd", "spe"] as const).map((stat) => (
           <div key={stat} className="text-center">
-            <div className="text-[8px] font-bold" style={{ color: STAT_COLORS[stat] }}>{STAT_SHORT[stat]}</div>
-            <div className="font-mono font-bold" style={{ color: "var(--ds-accent-blue)" }}>{pokemon.evs[stat]}</div>
+            <div className="text-[10px]" style={{ color: STAT_COLORS[stat] }}>{STAT_SHORT[stat]}</div>
+            <div style={{ color: "#5080c0" }}>{pokemon.evs[stat]}</div>
           </div>
         ))}
       </div>

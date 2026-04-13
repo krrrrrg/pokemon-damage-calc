@@ -39,25 +39,22 @@ export default function Home() {
   }, [defender]);
 
   return (
-    <div className="min-h-screen flex flex-col pokedex-body">
-      {/* 도감 상단 -- 카메라 렌즈 + 작은 LED */}
-      <header className="pokedex-header">
+    <div className="min-h-screen flex flex-col" style={{ background: "#18181b" }}>
+      {/* Top bar */}
+      <header
+        className="border-b-4"
+        style={{
+          background: "#202020",
+          borderColor: "#303030",
+        }}
+      >
         <div className="max-w-7xl mx-auto flex items-center justify-between px-4 py-3">
-          <div className="flex items-center gap-3">
-            {/* 포켓덱스 파란 카메라 렌즈 */}
-            <div className="pokedex-lens">
-              <div className="pokedex-lens-inner" />
-            </div>
-            {/* LED 인디케이터 */}
-            <div className="flex gap-1.5">
-              <div className="pokedex-led pokedex-led-red" />
-              <div className="pokedex-led pokedex-led-yellow" />
-              <div className="pokedex-led pokedex-led-green" />
-            </div>
-            <h1 className="text-sm font-bold tracking-tight text-white ml-2">
-              포켓몬 데미지 계산기
-            </h1>
-          </div>
+          <h1
+            className="text-base tracking-wide"
+            style={{ color: "#f0f0f0" }}
+          >
+            ▶ 포켓몬 데미지 계산기
+          </h1>
 
           {/* 모드 토글 */}
           <div className="mode-toggle">
@@ -77,14 +74,8 @@ export default function Home() {
         </div>
       </header>
 
-      {/* 힌지 라인 (DS 접히는 부분) */}
-      <div className="pokedex-hinge">
-        <div className="pokedex-hinge-line" />
-      </div>
-
-      {/* 메인 컨텐츠 */}
+      {/* Main content */}
       <main className="flex-1 p-3 max-w-7xl mx-auto w-full">
-        {/* 데스크톱: 3열 / 모바일: 세로 스택 */}
         <div className="flex flex-col lg:flex-row gap-3">
           {/* 공격측 */}
           <div className="lg:w-[360px] w-full flex-shrink-0">
@@ -125,17 +116,17 @@ export default function Home() {
         </div>
       </main>
 
-      {/* 푸터 -- 도감 하단 */}
-      <footer className="pokedex-footer">
-        <div className="flex items-center justify-center gap-3 py-2">
-          <div className="pokedex-dpad">
-            <div className="pokedex-dpad-h" />
-            <div className="pokedex-dpad-v" />
-          </div>
-          <span className="text-[10px] opacity-40 font-mono text-white">
-            포켓몬 데미지 계산기 | 데이터: PokeAPI + Supabase
-          </span>
-        </div>
+      {/* Footer */}
+      <footer
+        className="border-t-3 text-center py-2"
+        style={{
+          background: "#202020",
+          borderTop: "3px solid #303030",
+        }}
+      >
+        <span className="text-xs" style={{ color: "#606060" }}>
+          포켓몬 데미지 계산기 | 데이터: PokeAPI + Supabase
+        </span>
       </footer>
     </div>
   );

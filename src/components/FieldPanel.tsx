@@ -38,24 +38,25 @@ export default function FieldPanel({ field, onFieldChange }: FieldPanelProps) {
   };
 
   return (
-    <div className="ds-panel-dark p-3 flex flex-col gap-3 w-full">
+    <div className="pixel-panel-dark p-3 flex flex-col gap-3 w-full">
       {/* 타이틀 */}
-      <div className="flex items-center justify-center gap-2 pb-1" style={{ borderBottom: "2px solid var(--ds-gold)" }}>
-        <span className="text-[var(--ds-gold)] font-bold">*</span>
-        <h2 className="text-xs font-bold text-[var(--ds-gold)] tracking-wide">
-          필드 조건
+      <div
+        className="flex items-center justify-center pb-1"
+        style={{ borderBottom: "3px solid #d4a017" }}
+      >
+        <h2 className="text-xs" style={{ color: "#d4a017" }}>
+          ▶ 필드 조건
         </h2>
-        <span className="text-[var(--ds-gold)] font-bold">*</span>
       </div>
 
       {/* 날씨 */}
       <div>
-        <label className="text-[10px] font-bold opacity-60 mb-1 block">날씨</label>
+        <label className="text-xs opacity-60 mb-1 block">날씨</label>
         <div className="flex flex-wrap gap-1">
           {WEATHER_OPTIONS.map((w) => (
             <button
               key={w.value}
-              className={`ds-toggle ${field.weather === w.value ? "active" : ""}`}
+              className={`pixel-toggle ${field.weather === w.value ? "active" : ""}`}
               onClick={() => onFieldChange({ ...field, weather: w.value })}
             >
               {w.label}
@@ -66,12 +67,12 @@ export default function FieldPanel({ field, onFieldChange }: FieldPanelProps) {
 
       {/* 필드 */}
       <div>
-        <label className="text-[10px] font-bold opacity-60 mb-1 block">필드</label>
+        <label className="text-xs opacity-60 mb-1 block">필드</label>
         <div className="flex flex-wrap gap-1">
           {TERRAIN_OPTIONS.map((t) => (
             <button
               key={t.value}
-              className={`ds-toggle ${field.terrain === t.value ? "active-green" : ""}`}
+              className={`pixel-toggle ${field.terrain === t.value ? "active-green" : ""}`}
               onClick={() => onFieldChange({ ...field, terrain: t.value })}
             >
               {t.label}
@@ -82,12 +83,12 @@ export default function FieldPanel({ field, onFieldChange }: FieldPanelProps) {
 
       {/* 벽 */}
       <div>
-        <label className="text-[10px] font-bold opacity-60 mb-1 block">벽</label>
+        <label className="text-xs opacity-60 mb-1 block">벽</label>
         <div className="flex flex-wrap gap-1">
           {SCREEN_OPTIONS.map((s) => (
             <button
               key={s.value}
-              className={`ds-toggle ${field.screens.includes(s.value) ? "active-gold" : ""}`}
+              className={`pixel-toggle ${field.screens.includes(s.value) ? "active-gold" : ""}`}
               onClick={() => toggleScreen(s.value)}
             >
               {s.label}
@@ -98,22 +99,22 @@ export default function FieldPanel({ field, onFieldChange }: FieldPanelProps) {
 
       {/* 배틀 옵션 */}
       <div>
-        <label className="text-[10px] font-bold opacity-60 mb-1 block">배틀 옵션</label>
+        <label className="text-xs opacity-60 mb-1 block">배틀 옵션</label>
         <div className="flex flex-wrap gap-1">
           <button
-            className={`ds-toggle font-bold ${field.isDouble ? "active-red" : ""}`}
+            className={`pixel-toggle ${field.isDouble ? "active-red" : ""}`}
             onClick={() => onFieldChange({ ...field, isDouble: !field.isDouble })}
           >
             {field.isDouble ? "더블" : "싱글"}
           </button>
           <button
-            className={`ds-toggle ${field.isCrit ? "active-red" : ""}`}
+            className={`pixel-toggle ${field.isCrit ? "active-red" : ""}`}
             onClick={() => onFieldChange({ ...field, isCrit: !field.isCrit })}
           >
             급소
           </button>
           <button
-            className={`ds-toggle ${field.isHelping ? "active-green" : ""}`}
+            className={`pixel-toggle ${field.isHelping ? "active-green" : ""}`}
             onClick={() => onFieldChange({ ...field, isHelping: !field.isHelping })}
           >
             도우미
@@ -123,16 +124,16 @@ export default function FieldPanel({ field, onFieldChange }: FieldPanelProps) {
 
       {/* 설치기 */}
       <div>
-        <label className="text-[10px] font-bold opacity-60 mb-1 block">설치기 (방어측)</label>
+        <label className="text-xs opacity-60 mb-1 block">설치기 (방어측)</label>
         <div className="flex flex-wrap gap-1">
           <button
-            className={`ds-toggle ${field.stealth_rock ? "active-gold" : ""}`}
+            className={`pixel-toggle ${field.stealth_rock ? "active-gold" : ""}`}
             onClick={() => onFieldChange({ ...field, stealth_rock: !field.stealth_rock })}
           >
             스텔스록
           </button>
           <button
-            className={`ds-toggle ${field.spikes > 0 ? "active-gold" : ""}`}
+            className={`pixel-toggle ${field.spikes > 0 ? "active-gold" : ""}`}
             onClick={() => onFieldChange({ ...field, spikes: (field.spikes + 1) % 4 })}
           >
             {field.spikes > 0 ? `압정 x${field.spikes}` : "압정"}

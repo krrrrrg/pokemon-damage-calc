@@ -5,24 +5,17 @@
 @custom-variant dark (&:is(.dark *));
 
 :root {
-  /* 포켓덱스 컬러 팔레트 */
-  --ds-bg-dark: #8b1a1a;
-  --ds-bg-mid: #a02020;
-  --ds-bg-light: #c03030;
-  --ds-panel: #f5f0e0;
-  --ds-panel-dark: #e8dcc8;
-  --ds-panel-border: #5a4a3a;
-  --ds-text: #2c2c2c;
-  --ds-text-light: #f5f0e0;
-  --ds-accent: #e63946;
-  --ds-accent-blue: #457b9d;
-  --ds-accent-green: #4caf50;
-  --ds-hp-green: #4caf50;
-  --ds-hp-yellow: #ff9800;
-  --ds-hp-red: #f44336;
-  --ds-gold: #d4a017;
-  --ds-screen-hinge: #6b1010;
-  --ds-screen-bezel: #4a0a0a;
+  /* Game Boy pixel palette */
+  --gb-bg: #18181b;
+  --gb-panel: #f8f8f0;
+  --gb-border: #303030;
+  --gb-accent-red: #e53935;
+  --gb-accent-green: #78c850;
+  --gb-text: #303030;
+  --gb-text-light: #f0f0f0;
+  --gb-hp-green: #78c850;
+  --gb-hp-yellow: #f8d030;
+  --gb-hp-red: #f03830;
   --background: oklch(1 0 0);
   --foreground: oklch(0.145 0 0);
   --card: oklch(1 0 0);
@@ -58,11 +51,11 @@
 }
 
 @theme inline {
-  --color-background: var(--ds-bg-dark);
-  --color-foreground: var(--ds-text-light);
-  --font-sans: var(--font-sans);
-  --font-mono: var(--font-geist-mono);
-  --font-heading: var(--font-sans);
+  --color-background: var(--gb-bg);
+  --color-foreground: var(--gb-text-light);
+  --font-sans: "DungGeunMo", monospace;
+  --font-mono: "DungGeunMo", monospace;
+  --font-heading: "DungGeunMo", monospace;
   --color-sidebar-ring: var(--sidebar-ring);
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
@@ -101,494 +94,391 @@
   --radius-4xl: calc(var(--radius) * 2.6);
 }
 
+/* ========================================
+   Game Boy Pixel Art Global Styles
+   ======================================== */
+
+* {
+  font-family: "DungGeunMo", monospace !important;
+  image-rendering: pixelated;
+}
+
 body {
-  color: var(--ds-text-light);
-  font-family: 'Noto Sans KR', Arial, sans-serif;
+  background: var(--gb-bg);
+  color: var(--gb-text-light);
   min-height: 100vh;
 }
 
 /* ========================================
-   포켓덱스 본체 스타일
+   Pixel Panel
    ======================================== */
 
-/* 도감 전체 배경 */
-.pokedex-body {
-  background: linear-gradient(180deg, #8b1a1a 0%, #6b1010 50%, #4a0a0a 100%);
+.pixel-panel {
+  background: var(--gb-panel);
+  border: 3px solid var(--gb-border);
+  border-radius: 0;
+  color: var(--gb-text);
 }
 
-/* 도감 상단 헤더 */
-.pokedex-header {
-  background: linear-gradient(180deg, #b02020 0%, #8b1a1a 100%);
-  border-bottom: 3px solid #5a0e0e;
-  box-shadow: inset 0 1px 0 rgba(255,255,255,0.15), 0 2px 8px rgba(0,0,0,0.4);
-}
-
-/* 파란 카메라 렌즈 */
-.pokedex-lens {
-  width: 32px;
-  height: 32px;
-  border-radius: 50%;
-  background: linear-gradient(135deg, #2196f3 0%, #0d47a1 100%);
-  border: 3px solid #e0e0e0;
-  box-shadow: 0 0 0 2px #555, 0 2px 8px rgba(0,0,0,0.5);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-.pokedex-lens-inner {
-  width: 12px;
-  height: 12px;
-  border-radius: 50%;
-  background: radial-gradient(circle at 40% 35%, #bbdefb 0%, #64b5f6 40%, #1565c0 100%);
-  box-shadow: inset 0 -2px 4px rgba(0,0,0,0.3);
-}
-
-/* LED 인디케이터 */
-.pokedex-led {
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-  border: 1px solid rgba(0,0,0,0.3);
-}
-.pokedex-led-red {
-  background: radial-gradient(circle at 40% 35%, #ff6b6b, #e53935);
-  box-shadow: 0 0 4px #e53935;
-}
-.pokedex-led-yellow {
-  background: radial-gradient(circle at 40% 35%, #fff176, #f9a825);
-  box-shadow: 0 0 4px #f9a825;
-}
-.pokedex-led-green {
-  background: radial-gradient(circle at 40% 35%, #81c784, #2e7d32);
-  box-shadow: 0 0 4px #2e7d32;
-}
-
-/* 힌지 (DS 접히는 부분) */
-.pokedex-hinge {
-  background: linear-gradient(180deg, #5a0e0e 0%, #3a0808 50%, #5a0e0e 100%);
-  padding: 3px 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-.pokedex-hinge-line {
-  width: 60%;
-  height: 2px;
-  background: linear-gradient(90deg, transparent 0%, #888 20%, #aaa 50%, #888 80%, transparent 100%);
-  border-radius: 1px;
-}
-
-/* 도감 하단 푸터 */
-.pokedex-footer {
-  background: linear-gradient(180deg, #6b1010 0%, #4a0a0a 100%);
-  border-top: 2px solid #5a0e0e;
-}
-
-/* 십자키 (D-pad) */
-.pokedex-dpad {
-  position: relative;
-  width: 20px;
-  height: 20px;
-}
-.pokedex-dpad-h {
-  position: absolute;
-  top: 50%;
-  left: 0;
-  transform: translateY(-50%);
-  width: 20px;
-  height: 7px;
-  background: #333;
-  border-radius: 1px;
-}
-.pokedex-dpad-v {
-  position: absolute;
-  left: 50%;
-  top: 0;
-  transform: translateX(-50%);
-  width: 7px;
-  height: 20px;
-  background: #333;
-  border-radius: 1px;
+.pixel-panel-dark {
+  background: #282828;
+  border: 3px solid #505050;
+  border-radius: 0;
+  color: var(--gb-text-light);
 }
 
 /* ========================================
-   포켓덱스 패널 (화면) 스타일
+   Pixel Input
    ======================================== */
-.ds-panel {
-  background: linear-gradient(180deg, var(--ds-panel) 0%, var(--ds-panel-dark) 100%);
-  border: 3px solid var(--ds-panel-border);
-  border-radius: 12px;
-  box-shadow:
-    inset 0 1px 0 rgba(255,255,255,0.5),
-    inset 0 -2px 6px rgba(0,0,0,0.08),
-    0 4px 12px rgba(0,0,0,0.4);
-  color: var(--ds-text);
-}
 
-.ds-panel-dark {
-  background: linear-gradient(180deg, #2a1a1a 0%, #1a0f0f 100%);
-  border: 3px solid #5a3a3a;
-  border-radius: 12px;
-  box-shadow:
-    inset 0 1px 0 rgba(255,255,255,0.08),
-    inset 0 -2px 6px rgba(0,0,0,0.2),
-    0 4px 8px rgba(0,0,0,0.4);
-  color: var(--ds-text-light);
-}
-
-/* DS 입력 필드 */
-.ds-input {
+.pixel-input {
   background: #fff;
-  border: 2px solid var(--ds-panel-border);
-  border-radius: 6px;
+  border: 2px solid var(--gb-border);
+  border-radius: 0;
   padding: 4px 8px;
-  font-size: 13px;
-  color: var(--ds-text);
-  box-shadow: inset 0 1px 3px rgba(0,0,0,0.15);
+  font-size: 14px;
+  color: var(--gb-text);
   outline: none;
-  transition: border-color 0.2s;
+  transition: border-color 0.1s;
 }
-.ds-input:focus {
-  border-color: var(--ds-accent-green);
-  box-shadow: inset 0 1px 3px rgba(0,0,0,0.15), 0 0 0 2px rgba(76,175,80,0.25);
+.pixel-input:focus {
+  border-color: var(--gb-accent-red);
 }
-.ds-input:disabled {
-  background: #e8e0d0;
+.pixel-input:disabled {
+  background: #d8d8d0;
   opacity: 0.6;
   cursor: not-allowed;
 }
 
-/* DS 셀렉트 */
-.ds-select {
+/* ========================================
+   Pixel Select
+   ======================================== */
+
+.pixel-select {
   background: #fff;
-  border: 2px solid var(--ds-panel-border);
-  border-radius: 6px;
+  border: 2px solid var(--gb-border);
+  border-radius: 0;
   padding: 4px 8px;
-  font-size: 13px;
-  color: var(--ds-text);
-  box-shadow: inset 0 1px 3px rgba(0,0,0,0.15);
+  font-size: 14px;
+  color: var(--gb-text);
   cursor: pointer;
 }
 
-/* DS 버튼 -- 녹색 기본 */
-.ds-btn {
-  background: linear-gradient(180deg, var(--ds-accent-green) 0%, #388e3c 100%);
-  border: 2px solid #2e7d32;
-  border-radius: 8px;
-  color: white;
-  padding: 6px 16px;
+/* ========================================
+   Pixel Buttons
+   ======================================== */
+
+.pixel-btn {
+  background: var(--gb-panel);
+  border: 2px solid var(--gb-border);
+  border-radius: 0;
+  color: var(--gb-text);
+  padding: 4px 12px;
   font-size: 13px;
-  font-weight: 600;
+  font-weight: 400;
   cursor: pointer;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.3);
-  transition: all 0.15s;
+  transition: all 0.1s;
 }
-.ds-btn:hover {
-  background: linear-gradient(180deg, #66bb6a 0%, var(--ds-accent-green) 100%);
+.pixel-btn:hover {
+  background: #e0e0d8;
 }
-.ds-btn:active {
+.pixel-btn:active {
   transform: translateY(1px);
-  box-shadow: 0 1px 2px rgba(0,0,0,0.3);
 }
-
-.ds-btn-red {
-  background: linear-gradient(180deg, var(--ds-accent) 0%, #b52d38 100%);
-  border-color: #8b2028;
-}
-.ds-btn-red:hover {
-  background: linear-gradient(180deg, #ff5060 0%, var(--ds-accent) 100%);
-}
-
-.ds-btn-sm {
-  padding: 2px 8px;
-  font-size: 11px;
-  border-radius: 5px;
-  border-width: 1.5px;
-}
-
-.ds-btn-gold {
-  background: linear-gradient(180deg, var(--ds-gold) 0%, #b08810 100%);
-  border-color: #8a6c0a;
+.pixel-btn.active {
+  background: var(--gb-border);
   color: #fff;
 }
-.ds-btn-gold:hover {
-  background: linear-gradient(180deg, #e8b830 0%, var(--ds-gold) 100%);
+
+.pixel-btn-red {
+  background: var(--gb-accent-red);
+  border: 2px solid #b71c1c;
+  border-radius: 0;
+  color: #fff;
+  padding: 4px 12px;
+  font-size: 13px;
+  cursor: pointer;
+}
+.pixel-btn-red:hover {
+  background: #c62828;
 }
 
-/* EV 퀵 버튼 */
+.pixel-btn-green {
+  background: var(--gb-accent-green);
+  border: 2px solid #4e8c30;
+  border-radius: 0;
+  color: #fff;
+  padding: 4px 12px;
+  font-size: 13px;
+  cursor: pointer;
+}
+.pixel-btn-green:hover {
+  background: #66a840;
+}
+
+.pixel-btn-sm {
+  padding: 2px 8px;
+  font-size: 12px;
+  border-width: 2px;
+}
+
+/* ========================================
+   EV Quick Buttons
+   ======================================== */
+
 .ev-quick-btn {
   display: inline-flex;
   align-items: center;
   justify-content: center;
   min-width: 28px;
-  height: 20px;
-  padding: 0 4px;
-  font-size: 10px;
-  font-weight: 700;
-  border-radius: 4px;
-  border: 1.5px solid var(--ds-panel-border);
-  background: linear-gradient(180deg, #fff 0%, #f0ebe0 100%);
-  color: var(--ds-text);
+  height: 22px;
+  padding: 0 6px;
+  font-size: 12px;
+  border-radius: 0;
+  border: 2px solid var(--gb-border);
+  background: var(--gb-panel);
+  color: var(--gb-text);
   cursor: pointer;
   transition: all 0.1s;
-  box-shadow: 0 1px 2px rgba(0,0,0,0.15);
 }
 .ev-quick-btn:hover {
-  background: linear-gradient(180deg, var(--ds-accent-green) 0%, #388e3c 100%);
-  color: white;
-  border-color: var(--ds-accent-green);
+  background: var(--gb-accent-green);
+  color: #fff;
+  border-color: #4e8c30;
 }
 .ev-quick-btn:active {
-  transform: translateY(0.5px);
+  transform: translateY(1px);
 }
 .ev-quick-btn.active {
-  background: linear-gradient(180deg, var(--ds-accent-green) 0%, #388e3c 100%);
-  color: white;
-  border-color: #2e7d32;
+  background: var(--gb-accent-green);
+  color: #fff;
+  border-color: #4e8c30;
 }
 
-/* HP 바 */
+/* ========================================
+   HP Bar (pixelated)
+   ======================================== */
+
 .hp-bar {
   height: 10px;
-  border-radius: 5px;
-  background: #444;
+  border-radius: 0;
+  background: #404040;
   overflow: hidden;
-  border: 1.5px solid #333;
-  box-shadow: inset 0 1px 3px rgba(0,0,0,0.4);
+  border: 2px solid var(--gb-border);
 }
 .hp-bar-fill {
   height: 100%;
-  border-radius: 4px;
-  transition: width 0.3s ease, background-color 0.3s ease;
+  border-radius: 0;
+  transition: width 0.3s ease;
 }
-.hp-bar-fill.hp-green { background: linear-gradient(180deg, #6fcf70 0%, var(--ds-hp-green) 100%); }
-.hp-bar-fill.hp-yellow { background: linear-gradient(180deg, #ffb840 0%, var(--ds-hp-yellow) 100%); }
-.hp-bar-fill.hp-red { background: linear-gradient(180deg, #ff6060 0%, var(--ds-hp-red) 100%); }
+.hp-bar-fill.hp-green { background: var(--gb-hp-green); }
+.hp-bar-fill.hp-yellow { background: var(--gb-hp-yellow); }
+.hp-bar-fill.hp-red { background: var(--gb-hp-red); }
 
-/* 타입 배지 */
+/* ========================================
+   Type Badges
+   ======================================== */
+
 .type-badge {
   display: inline-flex;
   align-items: center;
-  padding: 2px 10px;
-  border-radius: 4px;
-  font-size: 11px;
-  font-weight: 700;
-  color: white;
-  text-shadow: 0 1px 1px rgba(0,0,0,0.4);
+  padding: 1px 8px;
+  border-radius: 0;
+  font-size: 12px;
+  color: #fff;
   letter-spacing: 0.5px;
-  box-shadow: 0 1px 2px rgba(0,0,0,0.2);
+  border: 1px solid rgba(0,0,0,0.2);
 }
 .type-normal { background: #a8a878; }
 .type-fighting { background: #c03028; }
 .type-flying { background: #a890f0; }
 .type-poison { background: #a040a0; }
-.type-ground { background: #e0c068; color: #333; }
+.type-ground { background: #e0c068; color: #303030; }
 .type-rock { background: #b8a038; }
 .type-bug { background: #a8b820; }
 .type-ghost { background: #705898; }
-.type-steel { background: #b8b8d0; color: #333; }
+.type-steel { background: #b8b8d0; color: #303030; }
 .type-fire { background: #f08030; }
 .type-water { background: #6890f0; }
 .type-grass { background: #78c850; }
-.type-electric { background: #f8d030; color: #333; }
+.type-electric { background: #f8d030; color: #303030; }
 .type-psychic { background: #f85888; }
-.type-ice { background: #98d8d8; color: #333; }
+.type-ice { background: #98d8d8; color: #303030; }
 .type-dragon { background: #7038f8; }
 .type-dark { background: #705848; }
 .type-fairy { background: #ee99ac; }
 .type-stellar { background: linear-gradient(90deg, #ff6b6b, #ffd93d, #6bff6b, #6bb5ff, #d06bff); }
 
-/* 상성 효과 텍스트 */
+/* ========================================
+   Effectiveness Text
+   ======================================== */
+
 .eff-immune { color: #888; font-weight: bold; }
 .eff-not-very { color: #a0522d; }
-.eff-neutral { color: var(--ds-text); }
-.eff-super { color: #e63946; font-weight: bold; }
-.eff-ultra { color: #d4001a; font-weight: bold; }
+.eff-neutral { color: var(--gb-text); }
+.eff-super { color: var(--gb-accent-red); font-weight: bold; }
+.eff-ultra { color: #b71c1c; font-weight: bold; }
 
-/* 스탯 바 */
+/* ========================================
+   Stat Bar (pixel)
+   ======================================== */
+
 .stat-bar {
-  height: 6px;
-  border-radius: 3px;
-  background: #ddd;
+  height: 8px;
+  border-radius: 0;
+  background: #c8c8c0;
   overflow: hidden;
+  border: 1px solid var(--gb-border);
 }
 .stat-bar-fill {
   height: 100%;
-  border-radius: 3px;
+  border-radius: 0;
 }
 
-/* 모드 토글 */
+/* ========================================
+   Mode Toggle (pixel)
+   ======================================== */
+
 .mode-toggle {
-  position: relative;
   display: inline-flex;
-  background: rgba(0,0,0,0.3);
-  border-radius: 20px;
-  border: 2px solid rgba(255,255,255,0.15);
+  border: 3px solid var(--gb-border);
+  border-radius: 0;
   overflow: hidden;
 }
 .mode-toggle button {
   padding: 6px 16px;
-  font-size: 13px;
-  font-weight: 600;
-  color: rgba(255,255,255,0.7);
-  background: transparent;
+  font-size: 14px;
+  color: var(--gb-text-light);
+  background: #404040;
   border: none;
   cursor: pointer;
-  transition: all 0.2s;
-  z-index: 1;
+  transition: all 0.1s;
+  border-right: 2px solid var(--gb-border);
+}
+.mode-toggle button:last-child {
+  border-right: none;
 }
 .mode-toggle button.active {
-  color: white;
-  background: var(--ds-accent-green);
-  border-radius: 16px;
+  color: #fff;
+  background: var(--gb-accent-red);
 }
 
-/* 스크롤바 포켓덱스 스타일 */
-::-webkit-scrollbar { width: 8px; }
-::-webkit-scrollbar-track { background: #4a0a0a; }
-::-webkit-scrollbar-thumb {
-  background: #8b1a1a;
-  border-radius: 4px;
+/* ========================================
+   Pixel Dialog (Pokemon battle text box)
+   ======================================== */
+
+.pixel-dialog {
+  background: var(--gb-panel);
+  border: 3px solid var(--gb-border);
+  border-bottom-width: 4px;
+  border-radius: 0;
+  padding: 12px 16px;
+  color: var(--gb-text);
 }
 
-/* 자동완성 드롭다운 */
+/* ========================================
+   Autocomplete Dropdown (pixel)
+   ======================================== */
+
 .autocomplete-dropdown {
   position: absolute;
   top: 100%;
   left: 0;
   right: 0;
-  background: white;
-  border: 2px solid var(--ds-panel-border);
+  background: #fff;
+  border: 2px solid var(--gb-border);
   border-top: none;
-  border-radius: 0 0 6px 6px;
+  border-radius: 0;
   max-height: 200px;
   overflow-y: auto;
   z-index: 50;
-  box-shadow: 0 4px 8px rgba(0,0,0,0.2);
 }
 .autocomplete-item {
   padding: 6px 10px;
   cursor: pointer;
-  font-size: 13px;
-  color: var(--ds-text);
+  font-size: 14px;
+  color: var(--gb-text);
   display: flex;
   align-items: center;
   gap: 8px;
 }
 .autocomplete-item:hover {
-  background: #e8e0d0;
+  background: #e8e8e0;
 }
 
-/* 배틀 메시지 박스 -- 픽셀 스타일 */
-.battle-message {
-  background: linear-gradient(180deg, #f8f0e0 0%, #e8dcc8 100%);
-  border: 3px solid var(--ds-panel-border);
-  border-radius: 12px;
-  padding: 12px 16px;
-  font-size: 14px;
-  color: var(--ds-text);
-  box-shadow:
-    inset 0 1px 0 rgba(255,255,255,0.6),
-    inset 0 -2px 4px rgba(0,0,0,0.05),
-    0 3px 6px rgba(0,0,0,0.2);
-}
+/* ========================================
+   Pixel Toggle (field buttons)
+   ======================================== */
 
-/* 스프라이트 박스 */
-.sprite-box {
-  background: radial-gradient(ellipse at center, rgba(255,255,255,0.6) 0%, rgba(200,188,168,0.3) 70%, transparent 100%);
-  border: 2px solid var(--ds-panel-border);
-  border-radius: 12px;
-  box-shadow: inset 0 2px 8px rgba(0,0,0,0.1);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-/* 섹션 타이틀 */
-.ds-section-title {
-  font-size: 11px;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-  padding: 3px 8px;
-  background: linear-gradient(90deg, var(--ds-accent) 0%, transparent 100%);
-  color: white;
-  border-radius: 4px 4px 0 0;
-  margin-bottom: 4px;
-}
-
-/* 필드 토글 버튼 */
-.ds-toggle {
-  font-size: 11px;
+.pixel-toggle {
+  font-size: 12px;
   padding: 4px 10px;
-  border-radius: 6px;
-  border: 1.5px solid #5a3a3a;
-  background: #2a1a1a;
-  color: var(--ds-text-light);
+  border-radius: 0;
+  border: 2px solid #505050;
+  background: #383838;
+  color: var(--gb-text-light);
   cursor: pointer;
-  transition: all 0.15s;
-  font-weight: 600;
+  transition: all 0.1s;
 }
-.ds-toggle:hover {
-  background: #3a2a2a;
+.pixel-toggle:hover {
+  background: #484848;
 }
-.ds-toggle.active {
-  background: var(--ds-accent-blue);
-  border-color: var(--ds-accent-blue);
-  color: #fff;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.3);
-}
-.ds-toggle.active-green {
-  background: var(--ds-accent-green);
-  border-color: var(--ds-accent-green);
+.pixel-toggle.active {
+  background: #5080c0;
+  border-color: #5080c0;
   color: #fff;
 }
-.ds-toggle.active-gold {
-  background: var(--ds-gold);
-  border-color: var(--ds-gold);
+.pixel-toggle.active-green {
+  background: var(--gb-accent-green);
+  border-color: var(--gb-accent-green);
   color: #fff;
 }
-.ds-toggle.active-red {
-  background: var(--ds-accent);
-  border-color: var(--ds-accent);
+.pixel-toggle.active-gold {
+  background: #d4a017;
+  border-color: #d4a017;
+  color: #fff;
+}
+.pixel-toggle.active-red {
+  background: var(--gb-accent-red);
+  border-color: var(--gb-accent-red);
   color: #fff;
 }
 
-/* EV 프리셋 버튼 그룹 */
+/* ========================================
+   EV Preset Group
+   ======================================== */
+
 .ev-preset-group {
   display: flex;
   gap: 2px;
   flex-wrap: wrap;
 }
 
-/* 포켓볼 아이콘 (CSS) */
-.pokeball-icon {
-  width: 16px;
-  height: 16px;
-  border-radius: 50%;
-  background: linear-gradient(180deg, #e63946 50%, #fff 50%);
-  border: 1.5px solid #333;
-  position: relative;
-}
-.pokeball-icon::after {
-  content: '';
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  width: 5px;
-  height: 5px;
-  border-radius: 50%;
-  background: #fff;
-  border: 1.5px solid #333;
+/* ========================================
+   Section Title (pixel)
+   ======================================== */
+
+.pixel-section-title {
+  font-size: 12px;
+  padding: 2px 8px;
+  background: var(--gb-border);
+  color: #fff;
+  border: 2px solid var(--gb-border);
+  border-radius: 0;
+  margin-bottom: 4px;
 }
 
-/* 반응형 */
-@media (max-width: 768px) {
-  .ds-panel, .ds-panel-dark {
-    border-radius: 8px;
-  }
-}
+/* ========================================
+   Scrollbar (pixel)
+   ======================================== */
+
+::-webkit-scrollbar { width: 8px; }
+::-webkit-scrollbar-track { background: #202020; }
+::-webkit-scrollbar-thumb { background: #505050; border-radius: 0; }
+
+/* ========================================
+   Dark theme overrides (shadcn compat)
+   ======================================== */
 
 .dark {
   --background: oklch(0.145 0 0);
@@ -630,8 +520,5 @@ body {
   }
   body {
     @apply bg-background text-foreground;
-  }
-  html {
-    @apply font-sans;
   }
 }

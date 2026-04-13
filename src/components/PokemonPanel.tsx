@@ -165,7 +165,7 @@ export default function PokemonPanel({
       });
   }, [pokemon, onPokemonChange, loadForms, allAbilities]);
 
-  // 폼 변경 (메가진화 등 폼 선택 시 특성도 갱신)
+  // 폼 변경
   const selectForm = useCallback((form: any) => {
     const newPokemon: Pokemon = {
       ...pokemon,
@@ -181,12 +181,10 @@ export default function PokemonPanel({
     newPokemon.maxHP = stats.hp;
     newPokemon.currentHP = stats.hp;
 
-    // 폼의 특성 목록 갱신
     const formAbilities = [form.ability1, form.ability2, form.hidden_ability].filter(Boolean);
     if (formAbilities.length > 0) {
       setPokemonAbilities(formAbilities);
     }
-    // 특성 한국어 이름 갱신
     const ab = allAbilities.find((a: any) => a.name_en === (form.ability1 || pokemon.ability));
     setAbilitySearch(ab?.name_kr ?? form.ability1 ?? "");
 
@@ -302,28 +300,24 @@ export default function PokemonPanel({
   }, []);
 
   const isAttacker = label === "공격";
-  const panelAccent = isAttacker ? "var(--ds-accent)" : "var(--ds-accent-blue)";
 
   return (
-    <div className="ds-panel p-3 flex flex-col gap-2.5 w-full" ref={dropdownRef}>
+    <div className="pixel-panel p-3 flex flex-col gap-2.5 w-full" ref={dropdownRef}>
       {/* 헤더 */}
       <div
         className="flex items-center justify-between pb-1.5 mb-0.5"
-        style={{ borderBottom: `2px solid ${panelAccent}` }}
+        style={{ borderBottom: `3px solid ${isAttacker ? "#e53935" : "#5080c0"}` }}
       >
-        <div className="flex items-center gap-2">
-          <div className="pokeball-icon" />
-          <h2 className="text-sm font-bold" style={{ color: panelAccent }}>
-            {label} 측
-          </h2>
-        </div>
-        <span className="text-xs font-mono opacity-60">Lv.{pokemon.level}</span>
+        <h2 className="text-sm" style={{ color: isAttacker ? "#e53935" : "#5080c0" }}>
+          ▶ {label} 측
+        </h2>
+        <span className="text-xs opacity-60">Lv.{pokemon.level}</span>
       </div>
 
       {/* 포켓몬 검색 */}
       <div className="relative">
         <input
-          className="ds-input w-full"
+          className="pixel-input w-full"
           placeholder="포켓몬 이름 검색..."
           value={searchQuery}
           onChange={(e) => {
@@ -343,7 +337,7 @@ export default function PokemonPanel({
                 {row.sprite_url && (
                   <img src={row.sprite_url} alt="" className="w-6 h-6" style={{ imageRendering: "pixelated" }} />
                 )}
-                <span className="font-medium">{row.name_kr}</span>
+                <span>{row.name_kr}</span>
                 <span className="text-xs opacity-50">{row.name_en}</span>
               </div>
             ))}
@@ -357,11 +351,12 @@ export default function PokemonPanel({
           {forms.map((f) => (
             <button
               key={f.id}
-              className={`text-[10px] px-2 py-0.5 rounded border transition-colors ${
-                pokemon.name === f.name_en
-                  ? "bg-[var(--ds-accent-blue)] text-white border-[var(--ds-accent-blue)]"
-                  : "bg-white border-[var(--ds-panel-border)] hover:bg-[#e8e0d0]"
-              }`}
+              className="pixel-btn pixel-btn-sm text-xs"
+              style={{
+                background: pokemon.name === f.name_en ? "#5080c0" : undefined,
+                color: pokemon.name === f.name_en ? "#fff" : undefined,
+                borderColor: pokemon.name === f.name_en ? "#5080c0" : undefined,
+              }}
               onClick={() => selectForm(f)}
             >
               {f.form === "default" ? "기본" : f.form}
@@ -373,7 +368,10 @@ export default function PokemonPanel({
       {/* 스프라이트 + 타입 */}
       {pokemon.name && (
         <div className="flex items-center gap-3">
-          <div className="sprite-box w-20 h-20">
+          <div
+            className="w-20 h-20 flex items-center justify-center"
+            style={{ border: "2px solid #303030", background: "#e8e8e0" }}
+          >
             <img
               src={`https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${pokemon.name.split("-")[0]}.png`}
               alt={pokemon.name}
@@ -387,7 +385,7 @@ export default function PokemonPanel({
               <TypeBadge type={pokemon.types[0]} />
               {pokemon.types[1] && <TypeBadge type={pokemon.types[1]} />}
             </div>
-            <span className="text-[11px] opacity-50 font-mono">{searchQuery || pokemon.name}</span>
+            <span className="text-xs opacity-50">{searchQuery || pokemon.name}</span>
           </div>
         </div>
       )}
@@ -395,9 +393,9 @@ export default function PokemonPanel({
       {/* 레벨 + 성격 */}
       <div className="grid grid-cols-2 gap-2">
         <div>
-          <label className="text-[10px] font-bold opacity-60 block mb-0.5">레벨</label>
+          <label className="text-xs opacity-60 block mb-0.5">레벨</label>
           <input
-            className="ds-input w-full"
+            className="pixel-input w-full"
             type="number"
             min={1}
             max={100}
@@ -406,9 +404,9 @@ export default function PokemonPanel({
           />
         </div>
         <div>
-          <label className="text-[10px] font-bold opacity-60 block mb-0.5">성격</label>
+          <label className="text-xs opacity-60 block mb-0.5">성격</label>
           <select
-            className="ds-select w-full"
+            className="pixel-select w-full"
             value={pokemon.nature.name}
             onChange={(e) => {
               const nat = natures.find((n: any) => n.name_en === e.target.value);
@@ -435,10 +433,10 @@ export default function PokemonPanel({
 
       {/* 특성 */}
       <div className="relative">
-        <label className="text-[10px] font-bold opacity-60 block mb-0.5">특성</label>
+        <label className="text-xs opacity-60 block mb-0.5">특성</label>
         {pokemonAbilities.length > 0 ? (
           <select
-            className="ds-select w-full"
+            className="pixel-select w-full"
             value={pokemon.ability}
             onChange={(e) => {
               const ab = allAbilities.find((a: any) => a.name_en === e.target.value);
@@ -458,7 +456,7 @@ export default function PokemonPanel({
         ) : (
           <div className="relative">
             <input
-              className="ds-input w-full"
+              className="pixel-input w-full"
               value={abilitySearch}
               onChange={(e) => {
                 setAbilitySearch(e.target.value);
@@ -489,8 +487,8 @@ export default function PokemonPanel({
                       setShowAbilityDropdown(false);
                     }}
                   >
-                    <span className="font-medium">{a.name_kr}</span>
-                    <span className="text-[10px] opacity-40 ml-auto">{a.name_en}</span>
+                    <span>{a.name_kr}</span>
+                    <span className="text-xs opacity-40 ml-auto">{a.name_en}</span>
                   </div>
                 ))}
               </div>
@@ -501,9 +499,9 @@ export default function PokemonPanel({
 
       {/* 도구 */}
       <div className="relative">
-        <label className="text-[10px] font-bold opacity-60 block mb-0.5">도구</label>
+        <label className="text-xs opacity-60 block mb-0.5">도구</label>
         <input
-          className="ds-input w-full"
+          className="pixel-input w-full"
           value={itemSearch}
           onChange={(e) => {
             setItemSearch(e.target.value);
@@ -534,8 +532,8 @@ export default function PokemonPanel({
                   setShowItemDropdown(false);
                 }}
               >
-                <span className="font-medium">{i.name_kr}</span>
-                <span className="text-[10px] opacity-40 ml-auto">{i.name_en}</span>
+                <span>{i.name_kr}</span>
+                <span className="text-xs opacity-40 ml-auto">{i.name_en}</span>
               </div>
             ))}
           </div>
@@ -544,9 +542,9 @@ export default function PokemonPanel({
 
       {/* 상태이상 */}
       <div>
-        <label className="text-[10px] font-bold opacity-60 block mb-0.5">상태이상</label>
+        <label className="text-xs opacity-60 block mb-0.5">상태이상</label>
         <select
-          className="ds-select w-full"
+          className="pixel-select w-full"
           value={pokemon.status}
           onChange={(e) => onPokemonChange({ ...pokemon, status: e.target.value as Status })}
         >
@@ -556,11 +554,11 @@ export default function PokemonPanel({
         </select>
       </div>
 
-      {/* 종족값 + 실능 */}
+      {/* 종족값 + 실능 (Gen 2 summary style) */}
       {pokemon.baseStats.hp > 0 && (
         <div className="flex flex-col gap-1">
-          <div className="ds-section-title">스탯</div>
-          <div className="flex justify-end text-[9px] font-bold opacity-50 gap-2 pr-1 mb-0.5">
+          <div className="pixel-section-title">스탯</div>
+          <div className="flex justify-end text-[10px] opacity-50 gap-2 pr-1 mb-0.5">
             <span className="w-8 text-right">종족</span>
             <span className="w-16 text-center">바</span>
             <span className="w-6 text-right">EV</span>
@@ -580,15 +578,15 @@ export default function PokemonPanel({
 
       {/* 개체값 */}
       <details className="text-xs">
-        <summary className="cursor-pointer font-bold opacity-60 text-[10px] hover:opacity-80">
+        <summary className="cursor-pointer opacity-60 text-xs hover:opacity-80">
           개체값 (IV) {gameMode === "champions" ? "- 31 고정" : ""}
         </summary>
         <div className="grid grid-cols-6 gap-1 mt-1.5">
           {STAT_KEYS.map((stat) => (
             <div key={stat} className="text-center">
-              <label className="text-[9px] opacity-50 font-bold">{STAT_SHORT[stat]}</label>
+              <label className="text-[10px] opacity-50">{STAT_SHORT[stat]}</label>
               <input
-                className="ds-input w-full text-center text-xs"
+                className="pixel-input w-full text-center text-xs"
                 type="number"
                 min={0}
                 max={31}
@@ -608,9 +606,9 @@ export default function PokemonPanel({
       <div>
         <div className="flex items-center justify-between mb-1.5">
           <div className="flex items-center gap-2">
-            <span className="text-[10px] font-bold opacity-60">노력치 (EV)</span>
+            <span className="text-xs opacity-60">노력치 (EV)</span>
             <button
-              className="ev-quick-btn text-[9px]"
+              className="ev-quick-btn text-[10px]"
               onClick={resetEvs}
               title="EV 전체 리셋"
             >
@@ -618,7 +616,7 @@ export default function PokemonPanel({
             </button>
             {gameMode === "standard" && (
               <button
-                className={`ev-quick-btn text-[9px] ${showPresets ? "active" : ""}`}
+                className={`ev-quick-btn text-[10px] ${showPresets ? "active" : ""}`}
                 onClick={() => setShowPresets(!showPresets)}
                 title="EV 프리셋"
               >
@@ -626,18 +624,18 @@ export default function PokemonPanel({
               </button>
             )}
           </div>
-          <span className={`text-[11px] font-mono font-bold ${evTotal > evMax ? "text-red-600" : ""}`}>
+          <span className={`text-xs ${evTotal > evMax ? "text-red-600" : ""}`}>
             {evTotal}/{evMax}
           </span>
         </div>
 
         {/* EV 프리셋 패널 */}
         {showPresets && gameMode === "standard" && (
-          <div className="flex flex-wrap gap-1 mb-2 p-1.5 bg-white/50 rounded-lg border border-[var(--ds-panel-border)]">
+          <div className="flex flex-wrap gap-1 mb-2 p-1.5" style={{ background: "#f0f0e8", border: "2px solid #303030" }}>
             {EV_PRESETS_STANDARD.map((preset) => (
               <button
                 key={preset.label}
-                className="ev-quick-btn text-[9px] px-2"
+                className="ev-quick-btn text-[10px] px-2"
                 onClick={() => applyEvPreset(preset.evs)}
               >
                 {preset.label}
@@ -651,13 +649,13 @@ export default function PokemonPanel({
           {STAT_KEYS.map((stat) => (
             <div key={stat} className="flex items-center gap-1.5">
               <span
-                className="w-5 text-[10px] font-bold text-center"
-                style={{ color: stat === "hp" ? "#f44336" : stat === "atk" ? "#ff9800" : stat === "def" ? "#ffd600" : stat === "spa" ? "#42a5f5" : stat === "spd" ? "#66bb6a" : "#ec407a" }}
+                className="w-5 text-xs text-center"
+                style={{ color: stat === "hp" ? "#f03830" : stat === "atk" ? "#f08030" : stat === "def" ? "#f8d030" : stat === "spa" ? "#6890f0" : stat === "spd" ? "#78c850" : "#f85888" }}
               >
                 {STAT_SHORT[stat]}
               </span>
               <input
-                className="ds-input w-14 text-center text-xs"
+                className="pixel-input w-14 text-center text-xs"
                 type="number"
                 min={0}
                 max={evPerStatMax}
@@ -679,7 +677,7 @@ export default function PokemonPanel({
                   </button>
                 ))}
               </div>
-              <span className="text-[10px] font-mono opacity-50 ml-auto w-8 text-right">
+              <span className="text-xs opacity-50 ml-auto w-8 text-right">
                 {actualStats[stat]}
               </span>
             </div>
@@ -689,27 +687,27 @@ export default function PokemonPanel({
 
       {/* 능력 랭크 */}
       <details className="text-xs">
-        <summary className="cursor-pointer font-bold opacity-60 text-[10px] hover:opacity-80">능력 랭크</summary>
+        <summary className="cursor-pointer opacity-60 text-xs hover:opacity-80">능력 랭크</summary>
         <div className="grid grid-cols-5 gap-1 mt-1.5">
           {(["atk", "def", "spa", "spd", "spe"] as const).map((stat) => (
             <div key={stat} className="text-center">
-              <label className="text-[9px] opacity-50 font-bold">{STAT_SHORT[stat]}</label>
+              <label className="text-[10px] opacity-50">{STAT_SHORT[stat]}</label>
               <div className="flex items-center justify-center gap-0.5">
                 <button
-                  className="ev-quick-btn w-4 h-4 text-[10px] leading-none"
+                  className="ev-quick-btn w-5 h-5 text-xs leading-none"
                   onClick={() => {
                     const val = Math.max(-6, pokemon.boosts[stat] - 1);
                     onPokemonChange({ ...pokemon, boosts: { ...pokemon.boosts, [stat]: val } });
                   }}
                 >-</button>
-                <span className={`w-6 text-center text-[10px] font-mono font-bold ${
-                  pokemon.boosts[stat] > 0 ? "text-[var(--ds-accent-green)]" :
-                  pokemon.boosts[stat] < 0 ? "text-[var(--ds-accent)]" : ""
+                <span className={`w-6 text-center text-xs ${
+                  pokemon.boosts[stat] > 0 ? "text-[#78c850]" :
+                  pokemon.boosts[stat] < 0 ? "text-[#e53935]" : ""
                 }`}>
                   {pokemon.boosts[stat] > 0 ? `+${pokemon.boosts[stat]}` : pokemon.boosts[stat]}
                 </span>
                 <button
-                  className="ev-quick-btn w-4 h-4 text-[10px] leading-none"
+                  className="ev-quick-btn w-5 h-5 text-xs leading-none"
                   onClick={() => {
                     const val = Math.min(6, pokemon.boosts[stat] + 1);
                     onPokemonChange({ ...pokemon, boosts: { ...pokemon.boosts, [stat]: val } });
@@ -741,13 +739,13 @@ export default function PokemonPanel({
       {/* 기술 선택 (공격 측만) */}
       {label === "공격" && (
         <div>
-          <div className="ds-section-title">기술</div>
+          <div className="pixel-section-title">기술</div>
           {[0, 1, 2, 3].map((slot) => (
             <div key={slot} className="relative mb-1.5">
               <div className="flex items-center gap-1.5">
-                <span className="text-[10px] opacity-40 font-mono w-4">{slot + 1}.</span>
+                <span className="text-xs opacity-40 w-4">{slot + 1}.</span>
                 <input
-                  className="ds-input flex-1 text-xs"
+                  className="pixel-input flex-1 text-xs"
                   placeholder="기술 검색..."
                   value={moveSearch[slot]}
                   onChange={(e) => searchMoves(e.target.value, slot)}
@@ -756,7 +754,7 @@ export default function PokemonPanel({
                 {moves[slot] && (
                   <div className="flex items-center gap-1">
                     <TypeBadge type={moves[slot]!.type} />
-                    <span className="text-[10px] font-mono font-bold">
+                    <span className="text-xs">
                       {moves[slot]!.category === "physical" ? "물" : "특"}
                       {" "}
                       {moves[slot]!.power ?? "-"}
@@ -772,11 +770,11 @@ export default function PokemonPanel({
                       className="autocomplete-item"
                       onClick={() => selectMove(m, slot)}
                     >
-                      <span className={`type-badge type-${m.type} text-[9px] px-1`}>
+                      <span className={`type-badge type-${m.type} text-[10px] px-1`}>
                         {m.type}
                       </span>
                       <span>{m.name_kr}</span>
-                      <span className="text-[10px] opacity-50 ml-auto">
+                      <span className="text-xs opacity-50 ml-auto">
                         {m.category === "physical" ? "물리" : "특수"} {m.power ?? "-"}
                       </span>
                     </div>

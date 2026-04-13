@@ -1,12 +1,12 @@
 "use client";
 
 const STAT_COLORS: Record<string, string> = {
-  hp: "#f44336",
-  atk: "#ff9800",
-  def: "#ffd600",
-  spa: "#42a5f5",
-  spd: "#66bb6a",
-  spe: "#ec407a",
+  hp: "#f03830",
+  atk: "#f08030",
+  def: "#f8d030",
+  spa: "#6890f0",
+  spd: "#78c850",
+  spe: "#f85888",
 };
 
 const STAT_LABELS: Record<string, string> = {
@@ -27,16 +27,16 @@ export default function StatBar({ stat, base, actual, ev }: StatBarProps) {
 
   return (
     <div className="flex items-center gap-2 text-xs">
-      <span className="w-4 font-bold text-center" style={{ color }}>{label}</span>
-      <span className="w-8 text-right font-mono">{base}</span>
+      <span className="w-4 text-center" style={{ color }}>{label}</span>
+      <span className="w-8 text-right">{base}</span>
       <div className="stat-bar flex-1">
         <div
           className="stat-bar-fill"
           style={{ width: `${pct}%`, background: color }}
         />
       </div>
-      <span className="w-8 text-right font-mono text-[11px] opacity-70">{ev > 0 ? `+${ev}` : ""}</span>
-      <span className="w-10 text-right font-bold font-mono">{actual}</span>
+      <span className="w-8 text-right text-xs opacity-70">{ev > 0 ? `+${ev}` : ""}</span>
+      <span className="w-10 text-right">{actual}</span>
     </div>
   );
 }
