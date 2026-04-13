@@ -53,6 +53,17 @@ const EV_PRESETS_STANDARD: { label: string; evs: Record<StatName, number> }[] = 
   { label: "H252/D252/S4", evs: { hp: 252, atk: 0, def: 0, spa: 0, spd: 252, spe: 4 } },
 ];
 
+// PokeAPI slug ("solar-power") → abilities DB name_en ("Solar Power") 매칭용
+function normalizeAbilityName(name: string): string {
+  return name.toLowerCase().replace(/[\s-]/g, "");
+}
+
+function findAbilityKr(allAbilities: any[], abilitySlug: string): string {
+  const norm = normalizeAbilityName(abilitySlug);
+  const found = allAbilities.find((a: any) => normalizeAbilityName(a.name_en) === norm);
+  return found?.name_kr ?? abilitySlug;
+}
+
 export default function PokemonPanel({
   label, pokemon, moves, gameMode, onPokemonChange, onMovesChange,
 }: PokemonPanelProps) {
@@ -65,6 +76,7 @@ export default function PokemonPanel({
   const [moveResults, setMoveResults] = useState<any[][]>([[], [], [], []]);
   const [activeMoveSlot, setActiveMoveSlot] = useState<number | null>(null);
   const [forms, setForms] = useState<any[]>([]);
+  const [spriteUrl, setSpriteUrl] = useState<string | null>(null);
   const [allAbilities, setAllAbilities] = useState<any[]>([]);
   const [pokemonAbilities, setPokemonAbilities] = useState<string[]>([]);
   const [abilitySearch, setAbilitySearch] = useState("");
@@ -138,12 +150,12 @@ export default function PokemonPanel({
     onPokemonChange(newPokemon);
     setSearchQuery(row.name_kr);
     setShowDropdown(false);
+    setSpriteUrl(row.sprite_url || `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${row.pokedex_number}.png`);
     loadForms(row.pokedex_number);
 
     const abilityNames = [row.ability1, row.ability2, row.hidden_ability].filter(Boolean);
     setPokemonAbilities(abilityNames);
-    const ab = allAbilities.find((a: any) => a.name_en === row.ability1);
-    setAbilitySearch(ab?.name_kr ?? row.ability1 ?? "");
+    setAbilitySearch(findAbilityKr(allAbilities, row.ability1 ?? ""));
 
     supabase
       .from("pokemon_moves")
@@ -185,11 +197,11 @@ export default function PokemonPanel({
     if (formAbilities.length > 0) {
       setPokemonAbilities(formAbilities);
     }
-    const ab = allAbilities.find((a: any) => a.name_en === (form.ability1 || pokemon.ability));
-    setAbilitySearch(ab?.name_kr ?? form.ability1 ?? "");
+    setAbilitySearch(findAbilityKr(allAbilities, form.ability1 || pokemon.ability));
 
+    setSpriteUrl(form.sprite_url || spriteUrl);
     onPokemonChange(newPokemon);
-  }, [pokemon, onPokemonChange, allAbilities]);
+  }, [pokemon, onPokemonChange, allAbilities, spriteUrl]);
 
   // 스탯 재계산
   const updateAndRecalc = useCallback((updates: Partial<Pokemon>) => {
@@ -372,13 +384,15 @@ export default function PokemonPanel({
             className="w-20 h-20 flex items-center justify-center"
             style={{ border: "2px solid #303030", background: "#e8e8e0" }}
           >
-            <img
-              src={`https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${pokemon.name.split("-")[0]}.png`}
-              alt={pokemon.name}
-              className="w-16 h-16"
-              style={{ imageRendering: "pixelated" }}
-              onError={(e) => { (e.target as HTMLImageElement).style.display = "none"; }}
-            />
+            {spriteUrl && (
+              <img
+                src={spriteUrl}
+                alt={searchQuery || pokemon.name}
+                className="w-16 h-16"
+                style={{ imageRendering: "pixelated" }}
+                onError={(e) => { (e.target as HTMLImageElement).style.display = "none"; }}
+              />
+            )}
           </div>
           <div className="flex flex-col gap-1.5">
             <div className="flex gap-1">
@@ -439,19 +453,15 @@ export default function PokemonPanel({
             className="pixel-select w-full"
             value={pokemon.ability}
             onChange={(e) => {
-              const ab = allAbilities.find((a: any) => a.name_en === e.target.value);
-              setAbilitySearch(ab?.name_kr ?? e.target.value);
+              setAbilitySearch(findAbilityKr(allAbilities, e.target.value));
               onPokemonChange({ ...pokemon, ability: e.target.value });
             }}
           >
-            {pokemonAbilities.map((abName) => {
-              const ab = allAbilities.find((a: any) => a.name_en === abName);
-              return (
-                <option key={abName} value={abName}>
-                  {ab?.name_kr ?? abName}
-                </option>
-              );
-            })}
+            {pokemonAbilities.map((abName) => (
+              <option key={abName} value={abName}>
+                {findAbilityKr(allAbilities, abName)}
+              </option>
+            ))}
           </select>
         ) : (
           <div className="relative">
