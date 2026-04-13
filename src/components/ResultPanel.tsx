@@ -11,6 +11,9 @@ interface ResultPanelProps {
     first: "attacker" | "defender" | "tie";
     attackerSpeed: number;
     defenderSpeed: number;
+    attackerPriority: number;
+    defenderPriority: number;
+    reason: string;
   } | null;
   physicalBulk: number;
   specialBulk: number;
@@ -53,29 +56,31 @@ export default function ResultPanel({
 
   return (
     <div className="flex flex-col gap-2">
-      {/* 스피드 비교 */}
+      {/* 스피드 + 우선도 비교 */}
       {speedComparison && (
         <div className="pixel-panel-dark px-3 py-2">
-          <div className="flex items-center justify-between">
-            <span className="text-xs" style={{ color: "#d4a017" }}>스피드</span>
-            <div className="flex items-center gap-2 text-xs">
-              <span className={speedComparison.first === "attacker" ? "text-[#e53935]" : "opacity-60"}>
-                {speedComparison.attackerSpeed}
-              </span>
-              <span style={{ color: "#d4a017" }}>vs</span>
-              <span className={speedComparison.first === "defender" ? "text-[#5080c0]" : "opacity-60"}>
-                {speedComparison.defenderSpeed}
-              </span>
+          <div className="flex flex-col gap-1">
+            <div className="flex items-center justify-between">
+              <span className="text-xs" style={{ color: "#d4a017" }}>선공 판정</span>
               <span className="text-xs ml-1" style={{
                 color: speedComparison.first === "attacker" ? "#e53935"
                      : speedComparison.first === "defender" ? "#5080c0"
                      : "#d4a017"
               }}>
-                {speedComparison.first === "attacker" ? ">> 공격측 선공"
-                 : speedComparison.first === "defender" ? "<< 방어측 선공"
-                 : "== 동속"}
+                {speedComparison.first === "attacker" ? "▶ 공격측 선공"
+                 : speedComparison.first === "defender" ? "◀ 방어측 선공"
+                 : "= 동속 (랜덤)"}
               </span>
             </div>
+            <div className="flex items-center justify-between text-[10px] opacity-60">
+              <span>스피드: {speedComparison.attackerSpeed} vs {speedComparison.defenderSpeed}</span>
+              <span>{speedComparison.reason}</span>
+            </div>
+            {(speedComparison.attackerPriority !== 0 || speedComparison.defenderPriority !== 0) && (
+              <div className="text-[10px] opacity-50">
+                우선도: 공격측 +{speedComparison.attackerPriority} / 방어측 +{speedComparison.defenderPriority}
+              </div>
+            )}
           </div>
         </div>
       )}

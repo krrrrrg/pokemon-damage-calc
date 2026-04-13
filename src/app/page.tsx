@@ -28,10 +28,13 @@ export default function Home() {
     }).filter((r) => r.move);
   }, [attacker, defender, attackerMoves, field]);
 
+  // 첫 번째 선택된 기술로 우선도 비교
+  const selectedMove = attackerMoves.find((m) => m !== null) ?? null;
+
   const speedComparison = useMemo(() => {
     if (!attacker.name || !defender.name) return null;
-    return compareSpeed(attacker, defender, field);
-  }, [attacker, defender, field]);
+    return compareSpeed(attacker, defender, field, selectedMove);
+  }, [attacker, defender, field, selectedMove]);
 
   const bulk = useMemo(() => {
     if (!defender.name) return { physical: 0, special: 0 };

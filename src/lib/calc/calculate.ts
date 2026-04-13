@@ -317,11 +317,25 @@ export function calculateDamage(
 
 // ─── 스피드 비교 ──────────────────────────────────────────
 
+export interface SpeedResult {
+  first: "attacker" | "defender" | "tie";
+  attackerSpeed: number;
+  defenderSpeed: number;
+  attackerPriority: number;
+  defenderPriority: number;
+  reason: string; // 판정 이유
+}
+
 export function compareSpeed(
   attacker: Pokemon,
   defender: Pokemon,
-  field: Field
-): { first: "attacker" | "defender" | "tie"; attackerSpeed: number; defenderSpeed: number } {
+  field: Field,
+  attackerMove?: Move | null,
+  defenderMove?: Move | null
+): SpeedResult {
+  const atkPriority = attackerMove?.priority ?? 0;
+  const defPriority = defenderMove?.priority ?? 0;
+
   const atkStats = calcAllStats(attacker.baseStats, attacker.ivs, attacker.evs, attacker.level, attacker.nature);
   const defStats = calcAllStats(defender.baseStats, defender.ivs, defender.evs, defender.level, defender.nature);
 
@@ -336,20 +350,35 @@ export function compareSpeed(
   if (attacker.status === "paralysis") atkSpe = Math.floor(atkSpe * 0.5);
   if (defender.status === "paralysis") defSpe = Math.floor(defSpe * 0.5);
 
-  // 날씨 특성 스피드
+  // 날씨/필드 특성 스피드
   const weatherSpeAbilities: Record<string, string> = {
     "chlorophyll": "sun",
     "swift-swim": "rain",
     "sand-rush": "sand",
     "slush-rush": "snow",
-    "surge-surfer": "electric", // 필드
+  };
+  const terrainSpeAbilities: Record<string, string> = {
+    "surge-surfer": "electric",
   };
   if (weatherSpeAbilities[attacker.ability] === field.weather) atkSpe *= 2;
   if (weatherSpeAbilities[defender.ability] === field.weather) defSpe *= 2;
+  if (terrainSpeAbilities[attacker.ability] === field.terrain) atkSpe *= 2;
+  if (terrainSpeAbilities[defender.ability] === field.terrain) defSpe *= 2;
 
-  if (atkSpe > defSpe) return { first: "attacker", attackerSpeed: atkSpe, defenderSpeed: defSpe };
-  if (defSpe > atkSpe) return { first: "defender", attackerSpeed: atkSpe, defenderSpeed: defSpe };
-  return { first: "tie", attackerSpeed: atkSpe, defenderSpeed: defSpe };
+  // 우선도 비교 (기술이 선택된 경우)
+  if (atkPriority !== defPriority) {
+    if (atkPriority > defPriority) {
+      return { first: "attacker", attackerSpeed: atkSpe, defenderSpeed: defSpe, attackerPriority: atkPriority, defenderPriority: defPriority, reason: `우선도 +${atkPriority} > +${defPriority}` };
+    }
+    return { first: "defender", attackerSpeed: atkSpe, defenderSpeed: defSpe, attackerPriority: atkPriority, defenderPriority: defPriority, reason: `우선도 +${defPriority} > +${atkPriority}` };
+  }
+
+  // 같은 우선도 → 스피드 비교
+  const reason = atkPriority !== 0 ? `같은 우선도(+${atkPriority}), 스피드로 판정` : "스피드 비교";
+
+  if (atkSpe > defSpe) return { first: "attacker", attackerSpeed: atkSpe, defenderSpeed: defSpe, attackerPriority: atkPriority, defenderPriority: defPriority, reason };
+  if (defSpe > atkSpe) return { first: "defender", attackerSpeed: atkSpe, defenderSpeed: defSpe, attackerPriority: atkPriority, defenderPriority: defPriority, reason };
+  return { first: "tie", attackerSpeed: atkSpe, defenderSpeed: defSpe, attackerPriority: atkPriority, defenderPriority: defPriority, reason: "동속 (랜덤)" };
 }
 
 // ─── 결정력 / 내구 ───────────────────────────────────────

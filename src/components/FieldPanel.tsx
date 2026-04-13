@@ -7,26 +7,26 @@ interface FieldPanelProps {
   onFieldChange: (field: Field) => void;
 }
 
-const WEATHER_OPTIONS: { value: Weather; label: string; icon: string }[] = [
-  { value: "none", label: "없음", icon: "--" },
-  { value: "sun", label: "쾌청", icon: "SUN" },
-  { value: "rain", label: "비", icon: "RAIN" },
-  { value: "sand", label: "모래바람", icon: "SAND" },
-  { value: "snow", label: "설경", icon: "SNOW" },
+const WEATHER_OPTIONS: { value: Weather; label: string; desc: string }[] = [
+  { value: "none", label: "없음", desc: "" },
+  { value: "sun", label: "쾌청", desc: "불꽃 x1.5 / 물 x0.5" },
+  { value: "rain", label: "비", desc: "물 x1.5 / 불꽃 x0.5" },
+  { value: "sand", label: "모래바람", desc: "바위 특방 x1.5" },
+  { value: "snow", label: "설경", desc: "얼음 방어 x1.5" },
 ];
 
-const TERRAIN_OPTIONS: { value: Terrain; label: string; icon: string }[] = [
-  { value: "none", label: "없음", icon: "--" },
-  { value: "electric", label: "일렉트릭", icon: "ELC" },
-  { value: "grassy", label: "그래스", icon: "GRS" },
-  { value: "psychic", label: "사이코", icon: "PSY" },
-  { value: "misty", label: "미스트", icon: "MST" },
+const TERRAIN_OPTIONS: { value: Terrain; label: string; desc: string }[] = [
+  { value: "none", label: "없음", desc: "" },
+  { value: "electric", label: "일렉트릭", desc: "전기 x1.3 / 잠듦 방지" },
+  { value: "grassy", label: "그래스", desc: "풀 x1.3 / 지진 x0.5" },
+  { value: "psychic", label: "사이코", desc: "에스퍼 x1.3 / 선제기 차단" },
+  { value: "misty", label: "미스트", desc: "드래곤 x0.5 / 상태이상 방지" },
 ];
 
-const SCREEN_OPTIONS: { value: Screen; label: string }[] = [
-  { value: "reflect", label: "리플렉터" },
-  { value: "light-screen", label: "빛의장막" },
-  { value: "aurora-veil", label: "오로라베일" },
+const SCREEN_OPTIONS: { value: Screen; label: string; desc: string }[] = [
+  { value: "reflect", label: "리플렉터", desc: "물리 x0.5 (더블 x0.67)" },
+  { value: "light-screen", label: "빛의장막", desc: "특수 x0.5 (더블 x0.67)" },
+  { value: "aurora-veil", label: "오로라베일", desc: "물리+특수 x0.5" },
 ];
 
 export default function FieldPanel({ field, onFieldChange }: FieldPanelProps) {
@@ -63,6 +63,11 @@ export default function FieldPanel({ field, onFieldChange }: FieldPanelProps) {
             </button>
           ))}
         </div>
+        {field.weather !== "none" && (
+          <div className="text-[10px] mt-1 opacity-60" style={{ color: "#78c850" }}>
+            {WEATHER_OPTIONS.find((w) => w.value === field.weather)?.desc}
+          </div>
+        )}
       </div>
 
       {/* 필드 */}
@@ -79,6 +84,11 @@ export default function FieldPanel({ field, onFieldChange }: FieldPanelProps) {
             </button>
           ))}
         </div>
+        {field.terrain !== "none" && (
+          <div className="text-[10px] mt-1 opacity-60" style={{ color: "#78c850" }}>
+            {TERRAIN_OPTIONS.find((t) => t.value === field.terrain)?.desc}
+          </div>
+        )}
       </div>
 
       {/* 벽 */}
@@ -95,6 +105,11 @@ export default function FieldPanel({ field, onFieldChange }: FieldPanelProps) {
             </button>
           ))}
         </div>
+        {field.screens.length > 0 && (
+          <div className="text-[10px] mt-1 opacity-60" style={{ color: "#d4a017" }}>
+            {field.screens.map((s) => SCREEN_OPTIONS.find((o) => o.value === s)?.desc).join(" / ")}
+          </div>
+        )}
       </div>
 
       {/* 배틀 옵션 */}
