@@ -89,7 +89,9 @@ export default function PokemonPanel({
   const [showPresets, setShowPresets] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
-  // 성격 + 특성 + 도구 로드
+  const [allMoves, setAllMoves] = useState<any[]>([]);
+
+  // 성격 + 특성 + 도구 + 전체기술 로드
   useEffect(() => {
     supabase.from("natures").select("*").order("id").then(({ data }) => {
       if (data) setNatures(data);
@@ -99,6 +101,9 @@ export default function PokemonPanel({
     });
     supabase.from("items").select("*").order("name_kr").then(({ data }) => {
       if (data) setAllItems(data);
+    });
+    supabase.from("moves").select("*").neq("category", "status").order("name_kr").then(({ data }) => {
+      if (data) setAllMoves(data);
     });
   }, []);
 
@@ -157,24 +162,7 @@ export default function PokemonPanel({
     setPokemonAbilities(abilityNames);
     setAbilitySearch(findAbilityKr(allAbilities, row.ability1 ?? ""));
 
-    supabase
-      .from("pokemon_moves")
-      .select("move_id")
-      .eq("pokemon_id", row.id)
-      .then(({ data: moveIds }) => {
-        if (moveIds && moveIds.length > 0) {
-          const ids = moveIds.map((m: any) => m.move_id);
-          supabase
-            .from("moves")
-            .select("*")
-            .in("id", ids)
-            .neq("category", "status")
-            .order("name_kr")
-            .then(({ data: movesData }) => {
-              if (movesData) setAvailableMoves(movesData);
-            });
-        }
-      });
+    // 기술은 전체 DB에서 검색 (allMoves 사용)
   }, [pokemon, onPokemonChange, loadForms, allAbilities]);
 
   // 폼 변경
@@ -255,13 +243,13 @@ export default function PokemonPanel({
       return;
     }
 
-    const filtered = availableMoves.filter(
-      (m: any) => m.name_kr.includes(query) || m.name_en.toLowerCase().includes(query.toLowerCase())
-    ).slice(0, 8);
+    const filtered = allMoves.filter(
+      (m: any) => m.name_kr?.includes(query) || m.name_en?.toLowerCase().includes(query.toLowerCase())
+    ).slice(0, 10);
     const newResults = [...moveResults];
     newResults[slot] = filtered;
     setMoveResults(newResults);
-  }, [moveSearch, moveResults, availableMoves]);
+  }, [moveSearch, moveResults, allMoves]);
 
   const selectMove = useCallback((moveData: any, slot: number) => {
     const move: Move = {
