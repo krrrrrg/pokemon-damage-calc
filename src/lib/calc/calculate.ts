@@ -106,7 +106,7 @@ export function calculateDamage(
       minPercent: 0, maxPercent: 0,
       koChance: { n: 999, chance: 0, text: "면역 (무효)" },
       critDamage: { min: 0, max: 0, minPercent: 0, maxPercent: 0 },
-      attackStat: 0, defenseStat: 0, effectiveness: 0, stab: 1, power: 0,
+      attackStat: 0, defenseStat: 0, effectiveness: 0, stab: 1, power: 0, multiHit: null,
     };
   }
 
@@ -147,7 +147,7 @@ export function calculateDamage(
       maxPercent: parseFloat(pct.toFixed(1)),
       koChance: calcKOChance(new Array(16).fill(fixed), defHP),
       critDamage: { min: fixed, max: fixed, minPercent: parseFloat(pct.toFixed(1)), maxPercent: parseFloat(pct.toFixed(1)) },
-      attackStat: 0, defenseStat: 0, effectiveness: 1, stab: 1, power: fixed,
+      attackStat: 0, defenseStat: 0, effectiveness: 1, stab: 1, power: fixed, multiHit: null,
     };
   }
 
@@ -294,13 +294,66 @@ export function calculateDamage(
   const critMin = Math.min(...critRolls);
   const critMax = Math.max(...critRolls);
 
+  // 연속기 계산
+  const multiHitInfo = getMultiHitInfo(move);
+  let multiHitResult: DamageResult["multiHit"] = null;
+
+  if (multiHitInfo) {
+    const hits: { power: number; minDamage: number; maxDamage: number; minPercent: number; maxPercent: number }[] = [];
+    let totalMin = 0;
+    let totalMax = 0;
+
+    // 타수별 위력이 다른 경우 (트리플악셀 등)
+    const hitCount = multiHitInfo.powerPerHit
+      ? multiHitInfo.powerPerHit.length
+      : multiHitInfo.maxHits;
+
+    for (let i = 0; i < hitCount; i++) {
+      const hitPower = multiHitInfo.powerPerHit
+        ? multiHitInfo.powerPerHit[i]
+        : power;
+
+      const hitBaseDmg = calcBaseDamage(attacker.level, hitPower, finalAtk, Math.max(1, finalDef));
+      const hitPreRandom = applyModifiers(hitBaseDmg, [
+        weatherMod, fieldMod, effectiveness, stab, critMod,
+      ]);
+      const hitRolls = getDamageRolls(hitPreRandom).map((roll) =>
+        Math.max(1, applyModifiers(roll, [
+          burnMod, screenMod, spreadMod, itemMod, abilityMod, defAbilityMod, pinchMod, helpMod,
+        ]))
+      );
+      const hitMin = Math.min(...hitRolls);
+      const hitMax = Math.max(...hitRolls);
+      totalMin += hitMin;
+      totalMax += hitMax;
+      hits.push({
+        power: hitPower,
+        minDamage: hitMin,
+        maxDamage: hitMax,
+        minPercent: parseFloat(((hitMin / defHP) * 100).toFixed(1)),
+        maxPercent: parseFloat(((hitMax / defHP) * 100).toFixed(1)),
+      });
+    }
+
+    multiHitResult = {
+      hits,
+      totalMin,
+      totalMax,
+      totalMinPercent: parseFloat(((totalMin / defHP) * 100).toFixed(1)),
+      totalMaxPercent: parseFloat(((totalMax / defHP) * 100).toFixed(1)),
+    };
+  }
+
   return {
-    minDamage: minDmg,
-    maxDamage: maxDmg,
+    minDamage: multiHitResult ? multiHitResult.totalMin : minDmg,
+    maxDamage: multiHitResult ? multiHitResult.totalMax : maxDmg,
     rolls,
-    minPercent: minPct,
-    maxPercent: maxPct,
-    koChance: calcKOChance(rolls, defHP),
+    minPercent: multiHitResult ? multiHitResult.totalMinPercent : minPct,
+    maxPercent: multiHitResult ? multiHitResult.totalMaxPercent : maxPct,
+    koChance: calcKOChance(
+      multiHitResult ? rolls.map((r) => r * (multiHitInfo?.maxHits ?? 1)) : rolls,
+      defHP
+    ),
     critDamage: {
       min: critMin,
       max: critMax,
@@ -312,6 +365,7 @@ export function calculateDamage(
     effectiveness,
     stab,
     power,
+    multiHit: multiHitResult,
   };
 }
 

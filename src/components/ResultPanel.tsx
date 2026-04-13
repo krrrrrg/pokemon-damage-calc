@@ -148,6 +148,29 @@ export default function ResultPanel({
               </span>
             </div>
 
+            {/* 연속기 상세 */}
+            {result.multiHit && (
+              <div className="text-xs mt-1 px-2 py-1.5" style={{ background: "#f0f0e8", border: "1px solid #d0d0c8" }}>
+                <div className="opacity-60 mb-1">▶ 연속기 ({result.multiHit.hits.length}타)</div>
+                {result.multiHit.hits.map((hit, i) => (
+                  <div key={i} className="flex items-center gap-2">
+                    <span className="opacity-40 w-8">{i + 1}타:</span>
+                    <span>위력 {hit.power}</span>
+                    <span className="opacity-60">→</span>
+                    <span>{hit.minDamage}~{hit.maxDamage}</span>
+                    <span style={{ color: "#e53935" }}>({hit.minPercent}%~{hit.maxPercent}%)</span>
+                  </div>
+                ))}
+                <div className="flex items-center gap-2 mt-1 pt-1" style={{ borderTop: "1px solid #d0d0c8" }}>
+                  <span className="w-8">총합:</span>
+                  <span className="font-bold">{result.multiHit.totalMin}~{result.multiHit.totalMax}</span>
+                  <span className="font-bold" style={{ color: "#e53935" }}>
+                    ({result.multiHit.totalMinPercent}%~{result.multiHit.totalMaxPercent}%)
+                  </span>
+                </div>
+              </div>
+            )}
+
             {/* 급소 데미지 */}
             <div className="text-xs opacity-50 flex items-center gap-2">
               <span>급소:</span>

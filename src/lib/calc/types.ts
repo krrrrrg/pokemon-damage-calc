@@ -139,6 +139,13 @@ export interface DamageResult {
   effectiveness: number;
   stab: number;
   power: number;
+  multiHit: {
+    hits: { power: number; minDamage: number; maxDamage: number; minPercent: number; maxPercent: number }[];
+    totalMin: number;
+    totalMax: number;
+    totalMinPercent: number;
+    totalMaxPercent: number;
+  } | null;
 }
 
 export const DEFAULT_IVS: IVs = { hp: 31, atk: 31, def: 31, spa: 31, spd: 31, spe: 31 };
