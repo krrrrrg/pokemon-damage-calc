@@ -53,12 +53,27 @@ export default function PokemonPanel({
   const [moveResults, setMoveResults] = useState<any[][]>([[], [], [], []]);
   const [activeMoveSlot, setActiveMoveSlot] = useState<number | null>(null);
   const [forms, setForms] = useState<any[]>([]);
+  const [allAbilities, setAllAbilities] = useState<any[]>([]);
+  const [pokemonAbilities, setPokemonAbilities] = useState<string[]>([]);
+  const [abilitySearch, setAbilitySearch] = useState("");
+  const [abilityResults, setAbilityResults] = useState<any[]>([]);
+  const [showAbilityDropdown, setShowAbilityDropdown] = useState(false);
+  const [allItems, setAllItems] = useState<any[]>([]);
+  const [itemSearch, setItemSearch] = useState("");
+  const [itemResults, setItemResults] = useState<any[]>([]);
+  const [showItemDropdown, setShowItemDropdown] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
-  // 성격 로드
+  // 성격 + 특성 + 도구 로드
   useEffect(() => {
     supabase.from("natures").select("*").order("id").then(({ data }) => {
       if (data) setNatures(data);
+    });
+    supabase.from("abilities").select("*").order("name_kr").then(({ data }) => {
+      if (data) setAllAbilities(data);
+    });
+    supabase.from("items").select("*").order("name_kr").then(({ data }) => {
+      if (data) setAllItems(data);
     });
   }, []);
 
@@ -112,6 +127,13 @@ export default function PokemonPanel({
     setSearchQuery(row.name_kr);
     setShowDropdown(false);
     loadForms(row.pokedex_number);
+
+    // 해당 포켓몬 특성 목록 (한글)
+    const abilityNames = [row.ability1, row.ability2, row.hidden_ability].filter(Boolean);
+    setPokemonAbilities(abilityNames);
+    // 특성 한글 이름 세팅
+    const ab = allAbilities.find((a: any) => a.name_en === row.ability1);
+    setAbilitySearch(ab?.name_kr ?? row.ability1 ?? "");
 
     // 배울 수 있는 기술 로드
     supabase
@@ -356,26 +378,113 @@ export default function PokemonPanel({
         </div>
       </div>
 
-      {/* 특성 + 도구 */}
-      <div className="grid grid-cols-2 gap-2">
-        <div>
-          <label className="text-[10px] font-bold opacity-60">특성</label>
-          <input
-            className="ds-input w-full"
+      {/* 특성 */}
+      <div className="relative">
+        <label className="text-[10px] font-bold opacity-60">특성</label>
+        {pokemonAbilities.length > 0 ? (
+          <select
+            className="ds-select w-full"
             value={pokemon.ability}
-            onChange={(e) => onPokemonChange({ ...pokemon, ability: e.target.value })}
-            placeholder="특성 입력"
-          />
-        </div>
-        <div>
-          <label className="text-[10px] font-bold opacity-60">도구</label>
-          <input
-            className="ds-input w-full"
-            value={pokemon.item}
-            onChange={(e) => onPokemonChange({ ...pokemon, item: e.target.value })}
-            placeholder="도구 입력"
-          />
-        </div>
+            onChange={(e) => {
+              const ab = allAbilities.find((a: any) => a.name_en === e.target.value);
+              setAbilitySearch(ab?.name_kr ?? e.target.value);
+              onPokemonChange({ ...pokemon, ability: e.target.value });
+            }}
+          >
+            {pokemonAbilities.map((abName) => {
+              const ab = allAbilities.find((a: any) => a.name_en === abName);
+              return (
+                <option key={abName} value={abName}>
+                  {ab?.name_kr ?? abName}
+                </option>
+              );
+            })}
+          </select>
+        ) : (
+          <div>
+            <input
+              className="ds-input w-full"
+              value={abilitySearch}
+              onChange={(e) => {
+                setAbilitySearch(e.target.value);
+                setShowAbilityDropdown(true);
+                const q = e.target.value;
+                if (q.length > 0) {
+                  setAbilityResults(
+                    allAbilities.filter((a: any) =>
+                      a.name_kr.includes(q) || a.name_en.toLowerCase().includes(q.toLowerCase())
+                    ).slice(0, 8)
+                  );
+                } else {
+                  setAbilityResults([]);
+                }
+              }}
+              onFocus={() => setShowAbilityDropdown(true)}
+              placeholder="특성 검색..."
+            />
+            {showAbilityDropdown && abilityResults.length > 0 && (
+              <div className="autocomplete-dropdown">
+                {abilityResults.map((a: any) => (
+                  <div
+                    key={a.id}
+                    className="autocomplete-item"
+                    onClick={() => {
+                      onPokemonChange({ ...pokemon, ability: a.name_en });
+                      setAbilitySearch(a.name_kr);
+                      setShowAbilityDropdown(false);
+                    }}
+                  >
+                    <span className="font-medium">{a.name_kr}</span>
+                    <span className="text-[10px] opacity-40 ml-auto">{a.name_en}</span>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+        )}
+      </div>
+
+      {/* 도구 */}
+      <div className="relative">
+        <label className="text-[10px] font-bold opacity-60">도구</label>
+        <input
+          className="ds-input w-full"
+          value={itemSearch}
+          onChange={(e) => {
+            setItemSearch(e.target.value);
+            setShowItemDropdown(true);
+            const q = e.target.value;
+            if (q.length > 0) {
+              setItemResults(
+                allItems.filter((i: any) =>
+                  i.name_kr.includes(q) || i.name_en.toLowerCase().includes(q.toLowerCase())
+                ).slice(0, 8)
+              );
+            } else {
+              setItemResults([]);
+            }
+          }}
+          onFocus={() => setShowItemDropdown(true)}
+          placeholder="도구 검색..."
+        />
+        {showItemDropdown && itemResults.length > 0 && (
+          <div className="autocomplete-dropdown">
+            {itemResults.map((i: any) => (
+              <div
+                key={i.id}
+                className="autocomplete-item"
+                onClick={() => {
+                  onPokemonChange({ ...pokemon, item: i.name_en.toLowerCase().replace(/ /g, "-") });
+                  setItemSearch(i.name_kr);
+                  setShowItemDropdown(false);
+                }}
+              >
+                <span className="font-medium">{i.name_kr}</span>
+                <span className="text-[10px] opacity-40 ml-auto">{i.name_en}</span>
+              </div>
+            ))}
+          </div>
+        )}
       </div>
 
       {/* 상태이상 */}

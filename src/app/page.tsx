@@ -11,7 +11,7 @@ import type { GameMode } from "@/lib/store";
 import { calculateDamage, compareSpeed, calcBulk } from "@/lib/calc/calculate";
 
 export default function Home() {
-  const [gameMode, setGameMode] = useState<GameMode>("standard");
+  const [gameMode, setGameMode] = useState<GameMode>("champions");
   const [attacker, setAttacker] = useState<Pokemon>(createDefaultPokemon());
   const [defender, setDefender] = useState<Pokemon>(createDefaultPokemon());
   const [attackerMoves, setAttackerMoves] = useState<(Move | null)[]>([null, null, null, null]);
