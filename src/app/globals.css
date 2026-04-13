@@ -5,24 +5,24 @@
 @custom-variant dark (&:is(.dark *));
 
 :root {
-  /* 4세대 DS 컬러 팔레트 */
-  --ds-bg-dark: #1a2332;
-  --ds-bg-mid: #2a3a50;
-  --ds-bg-light: #3d5a80;
-  --ds-panel: #e8e0d0;
-  --ds-panel-dark: #c8bca8;
-  --ds-panel-border: #8b7d6b;
+  /* 포켓덱스 컬러 팔레트 */
+  --ds-bg-dark: #8b1a1a;
+  --ds-bg-mid: #a02020;
+  --ds-bg-light: #c03030;
+  --ds-panel: #f5f0e0;
+  --ds-panel-dark: #e8dcc8;
+  --ds-panel-border: #5a4a3a;
   --ds-text: #2c2c2c;
-  --ds-text-light: #e8e0d0;
+  --ds-text-light: #f5f0e0;
   --ds-accent: #e63946;
   --ds-accent-blue: #457b9d;
-  --ds-accent-green: #2a9d8f;
+  --ds-accent-green: #4caf50;
   --ds-hp-green: #4caf50;
   --ds-hp-yellow: #ff9800;
   --ds-hp-red: #f44336;
   --ds-gold: #d4a017;
-  --ds-screen-hinge: #111c2a;
-  --ds-screen-bezel: #0f1923;
+  --ds-screen-hinge: #6b1010;
+  --ds-screen-bezel: #4a0a0a;
   --background: oklch(1 0 0);
   --foreground: oklch(0.145 0 0);
   --card: oklch(1 0 0);
@@ -108,24 +108,130 @@ body {
 }
 
 /* ========================================
-   DS 패널 스타일
+   포켓덱스 본체 스타일
+   ======================================== */
+
+/* 도감 전체 배경 */
+.pokedex-body {
+  background: linear-gradient(180deg, #8b1a1a 0%, #6b1010 50%, #4a0a0a 100%);
+}
+
+/* 도감 상단 헤더 */
+.pokedex-header {
+  background: linear-gradient(180deg, #b02020 0%, #8b1a1a 100%);
+  border-bottom: 3px solid #5a0e0e;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.15), 0 2px 8px rgba(0,0,0,0.4);
+}
+
+/* 파란 카메라 렌즈 */
+.pokedex-lens {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #2196f3 0%, #0d47a1 100%);
+  border: 3px solid #e0e0e0;
+  box-shadow: 0 0 0 2px #555, 0 2px 8px rgba(0,0,0,0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.pokedex-lens-inner {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 40% 35%, #bbdefb 0%, #64b5f6 40%, #1565c0 100%);
+  box-shadow: inset 0 -2px 4px rgba(0,0,0,0.3);
+}
+
+/* LED 인디케이터 */
+.pokedex-led {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  border: 1px solid rgba(0,0,0,0.3);
+}
+.pokedex-led-red {
+  background: radial-gradient(circle at 40% 35%, #ff6b6b, #e53935);
+  box-shadow: 0 0 4px #e53935;
+}
+.pokedex-led-yellow {
+  background: radial-gradient(circle at 40% 35%, #fff176, #f9a825);
+  box-shadow: 0 0 4px #f9a825;
+}
+.pokedex-led-green {
+  background: radial-gradient(circle at 40% 35%, #81c784, #2e7d32);
+  box-shadow: 0 0 4px #2e7d32;
+}
+
+/* 힌지 (DS 접히는 부분) */
+.pokedex-hinge {
+  background: linear-gradient(180deg, #5a0e0e 0%, #3a0808 50%, #5a0e0e 100%);
+  padding: 3px 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.pokedex-hinge-line {
+  width: 60%;
+  height: 2px;
+  background: linear-gradient(90deg, transparent 0%, #888 20%, #aaa 50%, #888 80%, transparent 100%);
+  border-radius: 1px;
+}
+
+/* 도감 하단 푸터 */
+.pokedex-footer {
+  background: linear-gradient(180deg, #6b1010 0%, #4a0a0a 100%);
+  border-top: 2px solid #5a0e0e;
+}
+
+/* 십자키 (D-pad) */
+.pokedex-dpad {
+  position: relative;
+  width: 20px;
+  height: 20px;
+}
+.pokedex-dpad-h {
+  position: absolute;
+  top: 50%;
+  left: 0;
+  transform: translateY(-50%);
+  width: 20px;
+  height: 7px;
+  background: #333;
+  border-radius: 1px;
+}
+.pokedex-dpad-v {
+  position: absolute;
+  left: 50%;
+  top: 0;
+  transform: translateX(-50%);
+  width: 7px;
+  height: 20px;
+  background: #333;
+  border-radius: 1px;
+}
+
+/* ========================================
+   포켓덱스 패널 (화면) 스타일
    ======================================== */
 .ds-panel {
   background: linear-gradient(180deg, var(--ds-panel) 0%, var(--ds-panel-dark) 100%);
-  border: 2px solid var(--ds-panel-border);
+  border: 3px solid var(--ds-panel-border);
   border-radius: 12px;
   box-shadow:
     inset 0 1px 0 rgba(255,255,255,0.5),
-    0 4px 8px rgba(0,0,0,0.3);
+    inset 0 -2px 6px rgba(0,0,0,0.08),
+    0 4px 12px rgba(0,0,0,0.4);
   color: var(--ds-text);
 }
 
 .ds-panel-dark {
-  background: linear-gradient(180deg, var(--ds-bg-mid) 0%, var(--ds-bg-dark) 100%);
-  border: 2px solid var(--ds-bg-light);
+  background: linear-gradient(180deg, #2a1a1a 0%, #1a0f0f 100%);
+  border: 3px solid #5a3a3a;
   border-radius: 12px;
   box-shadow:
-    inset 0 1px 0 rgba(255,255,255,0.1),
+    inset 0 1px 0 rgba(255,255,255,0.08),
+    inset 0 -2px 6px rgba(0,0,0,0.2),
     0 4px 8px rgba(0,0,0,0.4);
   color: var(--ds-text-light);
 }
@@ -143,8 +249,8 @@ body {
   transition: border-color 0.2s;
 }
 .ds-input:focus {
-  border-color: var(--ds-accent-blue);
-  box-shadow: inset 0 1px 3px rgba(0,0,0,0.15), 0 0 0 2px rgba(69,123,157,0.25);
+  border-color: var(--ds-accent-green);
+  box-shadow: inset 0 1px 3px rgba(0,0,0,0.15), 0 0 0 2px rgba(76,175,80,0.25);
 }
 .ds-input:disabled {
   background: #e8e0d0;
@@ -164,10 +270,10 @@ body {
   cursor: pointer;
 }
 
-/* DS 버튼 */
+/* DS 버튼 -- 녹색 기본 */
 .ds-btn {
-  background: linear-gradient(180deg, var(--ds-accent-blue) 0%, #345e7a 100%);
-  border: 2px solid #2a4a60;
+  background: linear-gradient(180deg, var(--ds-accent-green) 0%, #388e3c 100%);
+  border: 2px solid #2e7d32;
   border-radius: 8px;
   color: white;
   padding: 6px 16px;
@@ -178,7 +284,7 @@ body {
   transition: all 0.15s;
 }
 .ds-btn:hover {
-  background: linear-gradient(180deg, #5a8faf 0%, var(--ds-accent-blue) 100%);
+  background: linear-gradient(180deg, #66bb6a 0%, var(--ds-accent-green) 100%);
 }
 .ds-btn:active {
   transform: translateY(1px);
@@ -228,17 +334,17 @@ body {
   box-shadow: 0 1px 2px rgba(0,0,0,0.15);
 }
 .ev-quick-btn:hover {
-  background: linear-gradient(180deg, var(--ds-accent-blue) 0%, #345e7a 100%);
+  background: linear-gradient(180deg, var(--ds-accent-green) 0%, #388e3c 100%);
   color: white;
-  border-color: var(--ds-accent-blue);
+  border-color: var(--ds-accent-green);
 }
 .ev-quick-btn:active {
   transform: translateY(0.5px);
 }
 .ev-quick-btn.active {
-  background: linear-gradient(180deg, var(--ds-accent-blue) 0%, #345e7a 100%);
+  background: linear-gradient(180deg, var(--ds-accent-green) 0%, #388e3c 100%);
   color: white;
-  border-color: #2a4a60;
+  border-color: #2e7d32;
 }
 
 /* HP 바 */
@@ -315,16 +421,16 @@ body {
 .mode-toggle {
   position: relative;
   display: inline-flex;
-  background: var(--ds-bg-mid);
+  background: rgba(0,0,0,0.3);
   border-radius: 20px;
-  border: 2px solid var(--ds-bg-light);
+  border: 2px solid rgba(255,255,255,0.15);
   overflow: hidden;
 }
 .mode-toggle button {
   padding: 6px 16px;
   font-size: 13px;
   font-weight: 600;
-  color: var(--ds-text-light);
+  color: rgba(255,255,255,0.7);
   background: transparent;
   border: none;
   cursor: pointer;
@@ -333,15 +439,15 @@ body {
 }
 .mode-toggle button.active {
   color: white;
-  background: var(--ds-accent-blue);
+  background: var(--ds-accent-green);
   border-radius: 16px;
 }
 
-/* 스크롤바 DS 스타일 */
+/* 스크롤바 포켓덱스 스타일 */
 ::-webkit-scrollbar { width: 8px; }
-::-webkit-scrollbar-track { background: var(--ds-bg-dark); }
+::-webkit-scrollbar-track { background: #4a0a0a; }
 ::-webkit-scrollbar-thumb {
-  background: var(--ds-bg-light);
+  background: #8b1a1a;
   border-radius: 4px;
 }
 
@@ -373,7 +479,7 @@ body {
   background: #e8e0d0;
 }
 
-/* 배틀 메시지 박스 */
+/* 배틀 메시지 박스 -- 픽셀 스타일 */
 .battle-message {
   background: linear-gradient(180deg, #f8f0e0 0%, #e8dcc8 100%);
   border: 3px solid var(--ds-panel-border);
@@ -383,10 +489,11 @@ body {
   color: var(--ds-text);
   box-shadow:
     inset 0 1px 0 rgba(255,255,255,0.6),
+    inset 0 -2px 4px rgba(0,0,0,0.05),
     0 3px 6px rgba(0,0,0,0.2);
 }
 
-/* DS 스프라이트 박스 */
+/* 스프라이트 박스 */
 .sprite-box {
   background: radial-gradient(ellipse at center, rgba(255,255,255,0.6) 0%, rgba(200,188,168,0.3) 70%, transparent 100%);
   border: 2px solid var(--ds-panel-border);
@@ -397,33 +504,33 @@ body {
   justify-content: center;
 }
 
-/* DS 섹션 타이틀 */
+/* 섹션 타이틀 */
 .ds-section-title {
   font-size: 11px;
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.5px;
   padding: 3px 8px;
-  background: linear-gradient(90deg, var(--ds-accent-blue) 0%, transparent 100%);
+  background: linear-gradient(90deg, var(--ds-accent) 0%, transparent 100%);
   color: white;
   border-radius: 4px 4px 0 0;
   margin-bottom: 4px;
 }
 
-/* DS 필드 토글 버튼 */
+/* 필드 토글 버튼 */
 .ds-toggle {
   font-size: 11px;
   padding: 4px 10px;
   border-radius: 6px;
-  border: 1.5px solid var(--ds-bg-light);
-  background: var(--ds-bg-mid);
+  border: 1.5px solid #5a3a3a;
+  background: #2a1a1a;
   color: var(--ds-text-light);
   cursor: pointer;
   transition: all 0.15s;
   font-weight: 600;
 }
 .ds-toggle:hover {
-  background: var(--ds-bg-light);
+  background: #3a2a2a;
 }
 .ds-toggle.active {
   background: var(--ds-accent-blue);

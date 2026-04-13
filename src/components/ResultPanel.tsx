@@ -43,7 +43,7 @@ export default function ResultPanel({
   if (results.length === 0 || !results.some((r) => r.result)) {
     return (
       <div className="battle-message text-center py-6">
-        <div className="text-sm opacity-40 mb-1">-- BATTLE RESULT --</div>
+        <div className="text-sm opacity-40 mb-1">-- 배틀 결과 --</div>
         <div className="text-xs opacity-30">
           포켓몬과 기술을 선택하면 데미지가 계산됩니다.
         </div>
@@ -57,7 +57,7 @@ export default function ResultPanel({
       {speedComparison && (
         <div className="ds-panel-dark px-3 py-2">
           <div className="flex items-center justify-between">
-            <span className="text-[10px] font-bold text-[var(--ds-gold)]">SPEED</span>
+            <span className="text-[10px] font-bold text-[var(--ds-gold)]">스피드</span>
             <div className="flex items-center gap-2 text-xs font-mono">
               <span className={speedComparison.first === "attacker" ? "text-[var(--ds-accent)] font-bold" : "opacity-60"}>
                 {speedComparison.attackerSpeed}
@@ -93,7 +93,7 @@ export default function ResultPanel({
             {/* 기술 이름 헤더 */}
             <div className="flex items-center gap-2 mb-2 pb-1.5" style={{ borderBottom: "1px solid rgba(139,125,107,0.3)" }}>
               <span className="text-[10px] font-mono opacity-40">#{idx + 1}</span>
-              <span className="font-bold text-sm">{move.name}</span>
+              <span className="font-bold text-sm">{move.nameKr || move.name}</span>
               <TypeBadge type={move.type} />
               <span className="text-[10px] opacity-50 font-mono">
                 {move.category === "physical" ? "물리" : "특수"} / 위력:{result.power}
@@ -108,7 +108,7 @@ export default function ResultPanel({
             {/* 데미지 수치 */}
             <div className="flex items-baseline gap-3 mb-1.5">
               <div className="flex items-baseline gap-1">
-                <span className="text-[10px] opacity-40">DMG</span>
+                <span className="text-[10px] opacity-40">데미지</span>
                 <span className="font-mono font-bold text-base">
                   {result.minDamage}~{result.maxDamage}
                 </span>
@@ -172,7 +172,7 @@ export default function ResultPanel({
       {defender.name && (
         <div className="ds-panel-dark px-3 py-2">
           <div className="flex items-center justify-between text-xs">
-            <span className="font-bold text-[var(--ds-gold)] text-[10px]">BULK (방어측 내구)</span>
+            <span className="font-bold text-[var(--ds-gold)] text-[10px]">내구 (방어측)</span>
             <div className="flex gap-3 font-mono">
               <span>
                 <span className="opacity-50">물리:</span>

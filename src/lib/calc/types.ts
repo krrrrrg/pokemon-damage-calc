@@ -88,6 +88,7 @@ export interface Pokemon {
 export interface Move {
   id: number;
   name: string;
+  nameKr?: string;
   type: PokemonType;
   category: MoveCategory;
   power: number | null;

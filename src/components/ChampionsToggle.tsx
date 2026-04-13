@@ -62,7 +62,7 @@ export default function ChampionsToggle({
     <div className="text-[10px] px-2 py-2 rounded-md" style={{ background: "rgba(69,123,157,0.1)", border: "1.5px solid rgba(69,123,157,0.3)" }}>
       <div className="flex items-center justify-between mb-1.5">
         <div className="flex items-center gap-1.5">
-          <span className="font-bold" style={{ color: "var(--ds-accent-blue)" }}>POKE CHAMPIONS</span>
+          <span className="font-bold" style={{ color: "var(--ds-accent-blue)" }}>포케 챔피언스</span>
         </div>
         <span className={`font-mono font-bold ${evTotal > 66 ? "text-red-600" : ""}`} style={{ color: evTotal > 66 ? undefined : "var(--ds-accent-blue)" }}>
           {evTotal}/66

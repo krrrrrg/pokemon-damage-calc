@@ -39,9 +39,9 @@ const STATUS_OPTIONS: { value: Status; label: string }[] = [
 ];
 
 // Standard EV quick buttons
-const EV_QUICK_VALUES_STANDARD = [0, 4, 252];
+const EV_QUICK_VALUES_STANDARD = [0, 252];
 // Champions EV quick buttons
-const EV_QUICK_VALUES_CHAMPIONS = [0, 4, 32];
+const EV_QUICK_VALUES_CHAMPIONS = [0, 32];
 
 // EV Preset patterns for standard mode
 const EV_PRESETS_STANDARD: { label: string; evs: Record<StatName, number> }[] = [
@@ -165,7 +165,7 @@ export default function PokemonPanel({
       });
   }, [pokemon, onPokemonChange, loadForms, allAbilities]);
 
-  // 폼 변경
+  // 폼 변경 (메가진화 등 폼 선택 시 특성도 갱신)
   const selectForm = useCallback((form: any) => {
     const newPokemon: Pokemon = {
       ...pokemon,
@@ -180,8 +180,18 @@ export default function PokemonPanel({
     const stats = calcAllStats(newPokemon.baseStats, newPokemon.ivs, newPokemon.evs, newPokemon.level, newPokemon.nature);
     newPokemon.maxHP = stats.hp;
     newPokemon.currentHP = stats.hp;
+
+    // 폼의 특성 목록 갱신
+    const formAbilities = [form.ability1, form.ability2, form.hidden_ability].filter(Boolean);
+    if (formAbilities.length > 0) {
+      setPokemonAbilities(formAbilities);
+    }
+    // 특성 한국어 이름 갱신
+    const ab = allAbilities.find((a: any) => a.name_en === (form.ability1 || pokemon.ability));
+    setAbilitySearch(ab?.name_kr ?? form.ability1 ?? "");
+
     onPokemonChange(newPokemon);
-  }, [pokemon, onPokemonChange]);
+  }, [pokemon, onPokemonChange, allAbilities]);
 
   // 스탯 재계산
   const updateAndRecalc = useCallback((updates: Partial<Pokemon>) => {
@@ -247,6 +257,7 @@ export default function PokemonPanel({
     const move: Move = {
       id: moveData.id,
       name: moveData.name_en,
+      nameKr: moveData.name_kr,
       type: moveData.type as PokemonType,
       category: moveData.category,
       power: moveData.power,
@@ -376,7 +387,7 @@ export default function PokemonPanel({
               <TypeBadge type={pokemon.types[0]} />
               {pokemon.types[1] && <TypeBadge type={pokemon.types[1]} />}
             </div>
-            <span className="text-[11px] opacity-50 font-mono">{pokemon.name}</span>
+            <span className="text-[11px] opacity-50 font-mono">{searchQuery || pokemon.name}</span>
           </div>
         </div>
       )}

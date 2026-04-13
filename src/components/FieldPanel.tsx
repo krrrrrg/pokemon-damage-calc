@@ -43,7 +43,7 @@ export default function FieldPanel({ field, onFieldChange }: FieldPanelProps) {
       <div className="flex items-center justify-center gap-2 pb-1" style={{ borderBottom: "2px solid var(--ds-gold)" }}>
         <span className="text-[var(--ds-gold)] font-bold">*</span>
         <h2 className="text-xs font-bold text-[var(--ds-gold)] tracking-wide">
-          FIELD CONDITIONS
+          필드 조건
         </h2>
         <span className="text-[var(--ds-gold)] font-bold">*</span>
       </div>
