@@ -1,12 +1,12 @@
 "use client";
 
-import { useState, useEffect, useMemo } from "react";
+import { useState, useMemo } from "react";
 import PokemonPanel from "@/components/PokemonPanel";
 import FieldPanel from "@/components/FieldPanel";
 import ResultPanel from "@/components/ResultPanel";
 import type { Pokemon, Move, Field } from "@/lib/calc/types";
 import { DEFAULT_FIELD } from "@/lib/calc/types";
-import { createDefaultPokemon, recalcStats } from "@/lib/store";
+import { createDefaultPokemon } from "@/lib/store";
 import type { GameMode } from "@/lib/store";
 import { calculateDamage, compareSpeed, calcBulk } from "@/lib/calc/calculate";
 
@@ -39,29 +39,35 @@ export default function Home() {
   }, [defender]);
 
   return (
-    <div className="min-h-screen flex flex-col">
-      {/* 헤더 */}
-      <header className="flex items-center justify-between px-4 py-3 border-b-2 border-[var(--ds-bg-light)]">
-        <div className="flex items-center gap-3">
-          <h1 className="text-base font-bold tracking-tight">
-            <span className="text-[var(--ds-gold)]">◆</span> 포켓몬 데미지 계산기
-          </h1>
-        </div>
+    <div className="min-h-screen flex flex-col" style={{ background: "linear-gradient(180deg, var(--ds-bg-dark) 0%, #0f1923 100%)" }}>
+      {/* 헤더 -- DS 상단 화면 스타일 */}
+      <header className="relative px-4 py-3" style={{ borderBottom: "3px solid var(--ds-bg-light)" }}>
+        <div className="max-w-7xl mx-auto flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <div className="pokeball-icon" />
+            <h1 className="text-sm font-bold tracking-tight text-[var(--ds-text-light)]">
+              <span className="text-[var(--ds-gold)]">*</span>
+              {" "}포켓몬 데미지 계산기{" "}
+              <span className="text-[var(--ds-gold)]">*</span>
+            </h1>
+            <span className="text-[9px] opacity-30 font-mono ml-1">v1.0</span>
+          </div>
 
-        {/* 모드 토글 */}
-        <div className="mode-toggle">
-          <button
-            className={gameMode === "standard" ? "active" : ""}
-            onClick={() => setGameMode("standard")}
-          >
-            본편
-          </button>
-          <button
-            className={gameMode === "champions" ? "active" : ""}
-            onClick={() => setGameMode("champions")}
-          >
-            포챔스
-          </button>
+          {/* 모드 토글 */}
+          <div className="mode-toggle">
+            <button
+              className={gameMode === "standard" ? "active" : ""}
+              onClick={() => setGameMode("standard")}
+            >
+              본편
+            </button>
+            <button
+              className={gameMode === "champions" ? "active" : ""}
+              onClick={() => setGameMode("champions")}
+            >
+              포챔스
+            </button>
+          </div>
         </div>
       </header>
 
@@ -70,7 +76,7 @@ export default function Home() {
         {/* 데스크톱: 3열 / 모바일: 세로 스택 */}
         <div className="flex flex-col lg:flex-row gap-3">
           {/* 공격측 */}
-          <div className="lg:w-[340px] w-full flex-shrink-0">
+          <div className="lg:w-[360px] w-full flex-shrink-0">
             <PokemonPanel
               label="공격"
               pokemon={attacker}
@@ -84,7 +90,6 @@ export default function Home() {
           {/* 중앙: 필드 + 결과 */}
           <div className="flex-1 flex flex-col gap-3 min-w-0">
             <FieldPanel field={field} onFieldChange={setField} />
-
             <ResultPanel
               results={results}
               attacker={attacker}
@@ -96,7 +101,7 @@ export default function Home() {
           </div>
 
           {/* 방어측 */}
-          <div className="lg:w-[340px] w-full flex-shrink-0">
+          <div className="lg:w-[360px] w-full flex-shrink-0">
             <PokemonPanel
               label="방어"
               pokemon={defender}
@@ -110,8 +115,8 @@ export default function Home() {
       </main>
 
       {/* 푸터 */}
-      <footer className="text-center text-[10px] opacity-30 py-3">
-        포켓몬 데미지 계산기 v1.0 | 데이터: PokeAPI
+      <footer className="text-center text-[10px] opacity-20 py-3 font-mono">
+        POKEMON DAMAGE CALCULATOR | DATA: PokeAPI + Supabase
       </footer>
     </div>
   );

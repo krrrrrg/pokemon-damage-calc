@@ -11,14 +11,23 @@ interface GimmickPanelProps {
   hasGmax: boolean;
 }
 
-const GIMMICK_OPTIONS: { value: GimmickType; label: string; color: string }[] = [
-  { value: "none", label: "없음", color: "" },
-  { value: "mega", label: "메가진화", color: "bg-gradient-to-r from-pink-500 to-purple-500" },
-  { value: "z-move", label: "Z기술", color: "bg-gradient-to-r from-yellow-400 to-orange-500" },
-  { value: "dynamax", label: "다이맥스", color: "bg-gradient-to-r from-red-500 to-red-700" },
-  { value: "gigantamax", label: "거다이맥스", color: "bg-gradient-to-r from-red-600 to-pink-600" },
-  { value: "terastal", label: "테라스탈", color: "bg-gradient-to-r from-cyan-400 to-blue-500" },
+const GIMMICK_OPTIONS: { value: GimmickType; label: string; activeClass: string }[] = [
+  { value: "none", label: "없음", activeClass: "active" },
+  { value: "mega", label: "메가진화", activeClass: "" },
+  { value: "z-move", label: "Z기술", activeClass: "" },
+  { value: "dynamax", label: "다이맥스", activeClass: "" },
+  { value: "gigantamax", label: "거다이맥스", activeClass: "" },
+  { value: "terastal", label: "테라스탈", activeClass: "" },
 ];
+
+const GIMMICK_COLORS: Record<GimmickType, string> = {
+  none: "var(--ds-bg-light)",
+  mega: "#a855f7",
+  "z-move": "#f59e0b",
+  dynamax: "#ef4444",
+  gigantamax: "#dc2626",
+  terastal: "#06b6d4",
+};
 
 const TERA_TYPES: PokemonType[] = [
   "normal", "fighting", "flying", "poison", "ground", "rock",
@@ -41,80 +50,84 @@ export default function GimmickPanel({
   const setGimmick = useCallback((gimmick: GimmickType) => {
     const updates: Partial<Pokemon> = { gimmick };
 
-    // 기믹 전환 시 테라 상태 정리
     if (gimmick !== "terastal") {
       updates.teraActive = false;
     }
     if (gimmick === "terastal") {
       updates.teraActive = true;
       if (!pokemon.teraType) {
-        updates.teraType = pokemon.types[0]; // 기본타입으로 초기화
+        updates.teraType = pokemon.types[0];
       }
     }
 
     onPokemonChange({ ...pokemon, ...updates });
   }, [pokemon, onPokemonChange]);
 
-  // 사용 가능한 기믹 필터링
   const availableGimmicks = GIMMICK_OPTIONS.filter((g) => {
     if (g.value === "none") return true;
     if (g.value === "mega") return hasMegaForm;
     if (g.value === "gigantamax") return hasGmax;
-    return true; // z-move, dynamax, terastal은 항상 가능
+    return true;
   });
 
   return (
     <div className="flex flex-col gap-2">
-      <label className="text-[10px] font-bold opacity-60">배틀 기믹</label>
+      <div className="ds-section-title">배틀 기믹</div>
 
       {/* 기믹 선택 버튼 */}
       <div className="flex flex-wrap gap-1">
-        {availableGimmicks.map((g) => (
-          <button
-            key={g.value}
-            className={`text-[10px] px-2 py-1 rounded border font-bold transition-all ${
-              pokemon.gimmick === g.value
-                ? `${g.color || "bg-gray-500"} text-white border-transparent shadow-md`
-                : "bg-white border-[var(--ds-panel-border)] text-[var(--ds-text)]"
-            }`}
-            onClick={() => setGimmick(g.value)}
-          >
-            {g.label}
-          </button>
-        ))}
+        {availableGimmicks.map((g) => {
+          const isActive = pokemon.gimmick === g.value;
+          const color = GIMMICK_COLORS[g.value];
+          return (
+            <button
+              key={g.value}
+              className="text-[10px] px-2.5 py-1 rounded-md border-2 font-bold transition-all"
+              style={{
+                background: isActive ? color : "white",
+                borderColor: isActive ? color : "var(--ds-panel-border)",
+                color: isActive ? "white" : "var(--ds-text)",
+                boxShadow: isActive ? `0 2px 6px ${color}40` : "none",
+              }}
+              onClick={() => setGimmick(g.value)}
+            >
+              {g.label}
+            </button>
+          );
+        })}
       </div>
 
-      {/* 기믹별 추가 UI */}
+      {/* 기믹별 설명 */}
       {pokemon.gimmick === "mega" && (
-        <div className="text-[10px] px-2 py-1.5 rounded bg-purple-50 border border-purple-200">
-          <span className="font-bold text-purple-700">메가진화</span>
-          <span className="opacity-60 ml-1">— 종족값/특성/타입이 메가폼으로 변경됩니다</span>
+        <div className="text-[10px] px-2 py-1.5 rounded-md" style={{ background: "#a855f710", border: "1.5px solid #a855f740" }}>
+          <span className="font-bold" style={{ color: "#a855f7" }}>메가진화</span>
+          <span className="opacity-60 ml-1">-- 종족값/특성/타입이 메가폼으로 변경</span>
         </div>
       )}
 
       {pokemon.gimmick === "z-move" && (
-        <div className="text-[10px] px-2 py-1.5 rounded bg-orange-50 border border-orange-200">
-          <span className="font-bold text-orange-700">Z기술</span>
-          <span className="opacity-60 ml-1">— 선택된 기술이 Z기술 위력으로 자동 변환됩니다</span>
-          <div className="mt-1 text-[9px] opacity-50">
-            원본 위력 → Z위력: 55이하→100 / 60~65→120 / 70~75→140 / 80~85→160 / 90~95→175 / 100→180
+        <div className="text-[10px] px-2 py-1.5 rounded-md" style={{ background: "#f59e0b10", border: "1.5px solid #f59e0b40" }}>
+          <span className="font-bold" style={{ color: "#f59e0b" }}>Z기술</span>
+          <span className="opacity-60 ml-1">-- 기술이 Z기술 위력으로 변환</span>
+          <div className="mt-0.5 text-[9px] opacity-40 font-mono">
+            55이하:100 / 60~65:120 / 70~75:140 / 80~85:160 / 90~95:175 / 100:180
           </div>
         </div>
       )}
 
       {(pokemon.gimmick === "dynamax" || pokemon.gimmick === "gigantamax") && (
-        <div className="text-[10px] px-2 py-1.5 rounded bg-red-50 border border-red-200">
-          <span className="font-bold text-red-700">
+        <div className="text-[10px] px-2 py-1.5 rounded-md" style={{ background: "#ef444410", border: "1.5px solid #ef444440" }}>
+          <span className="font-bold" style={{ color: "#ef4444" }}>
             {pokemon.gimmick === "gigantamax" ? "거다이맥스" : "다이맥스"}
           </span>
-          <span className="opacity-60 ml-1">— HP 2배, 기술이 다이맥스기로 변환됩니다</span>
+          <span className="opacity-60 ml-1">-- HP 2배, 기술이 다이맥스기로 변환</span>
         </div>
       )}
 
       {pokemon.gimmick === "terastal" && (
-        <div className="text-[10px] px-2 py-1.5 rounded bg-cyan-50 border border-cyan-200">
-          <div className="flex items-center gap-2 mb-1">
-            <span className="font-bold text-cyan-700">테라스탈</span>
+        <div className="text-[10px] px-2 py-1.5 rounded-md" style={{ background: "#06b6d410", border: "1.5px solid #06b6d440" }}>
+          <div className="flex items-center gap-2 mb-1.5">
+            <span className="font-bold" style={{ color: "#06b6d4" }}>테라스탈</span>
             {pokemon.teraType && pokemon.teraType !== "stellar" && (
               <TypeBadge type={pokemon.teraType} />
             )}
@@ -122,14 +135,14 @@ export default function GimmickPanel({
               <span className="type-badge type-stellar">스텔라</span>
             )}
           </div>
-          <div className="flex flex-wrap gap-0.5 mt-1">
+          <div className="flex flex-wrap gap-0.5">
             {TERA_TYPES.map((t) => (
               <button
                 key={t}
-                className={`text-[9px] px-1.5 py-0.5 rounded transition-all ${
+                className={`text-[9px] px-1.5 py-0.5 rounded transition-all border ${
                   pokemon.teraType === t
-                    ? `type-${t} text-white`
-                    : "bg-gray-100 text-gray-600 hover:bg-gray-200"
+                    ? `type-${t} text-white border-transparent`
+                    : "bg-white text-[var(--ds-text)] border-[var(--ds-panel-border)] hover:opacity-80"
                 }`}
                 onClick={() => onPokemonChange({
                   ...pokemon,
@@ -142,10 +155,10 @@ export default function GimmickPanel({
               </button>
             ))}
             <button
-              className={`text-[9px] px-1.5 py-0.5 rounded transition-all ${
+              className={`text-[9px] px-1.5 py-0.5 rounded transition-all border ${
                 pokemon.teraType === "stellar"
-                  ? "type-stellar text-white"
-                  : "bg-gray-100 text-gray-600 hover:bg-gray-200"
+                  ? "type-stellar text-white border-transparent"
+                  : "bg-white text-[var(--ds-text)] border-[var(--ds-panel-border)] hover:opacity-80"
               }`}
               onClick={() => onPokemonChange({
                 ...pokemon,
