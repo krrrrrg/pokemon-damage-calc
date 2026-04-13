@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useMemo } from "react";
+import Link from "next/link";
 import PokemonPanel from "@/components/PokemonPanel";
 import FieldPanel from "@/components/FieldPanel";
 import ResultPanel from "@/components/ResultPanel";
@@ -59,6 +60,10 @@ export default function Home() {
             ▶ 포켓몬 데미지 계산기
           </h1>
 
+          <div className="flex items-center gap-3">
+          <Link href="/wiki" className="pixel-btn text-xs">
+            위키
+          </Link>
           {/* 모드 토글 */}
           <div className="mode-toggle">
             <button
@@ -73,6 +78,7 @@ export default function Home() {
             >
               포챔스
             </button>
+          </div>
           </div>
         </div>
       </header>
