@@ -53,6 +53,29 @@ const EV_PRESETS_STANDARD: { label: string; evs: Record<StatName, number> }[] = 
   { label: "H252/D252/S4", evs: { hp: 252, atk: 0, def: 0, spa: 0, spd: 252, spe: 4 } },
 ];
 
+// 도구 효과 설명
+function getItemDesc(item: any): string | null {
+  if (!item) return null;
+  if (item.damage_modifier && item.condition) {
+    const cond = item.condition.startsWith("type:") ? `${item.condition.replace("type:", "")} 타입` :
+      item.condition === "super_effective" ? "효과발군 시" :
+      item.condition === "physical" ? "물리기술" :
+      item.condition === "special" ? "특수기술" : item.condition;
+    return `데미지 x${item.damage_modifier} (${cond})`;
+  }
+  if (item.damage_modifier) return `데미지 x${item.damage_modifier}`;
+  if (item.stat_modifier && item.stat_multiplier) {
+    const stat = item.stat_modifier === "atk" ? "공격" :
+      item.stat_modifier === "spa" ? "특공" :
+      item.stat_modifier === "def" ? "방어" :
+      item.stat_modifier === "spd" ? "특방" :
+      item.stat_modifier === "spe" ? "스피드" :
+      item.stat_modifier === "def,spd" ? "방어/특방" : item.stat_modifier;
+    return `${stat} x${item.stat_multiplier}`;
+  }
+  return null;
+}
+
 // PokeAPI slug ("solar-power") → abilities DB name_en ("Solar Power") 매칭용
 function normalizeAbilityName(name: string): string {
   return name.toLowerCase().replace(/[\s-]/g, "");
@@ -508,8 +531,8 @@ export default function PokemonPanel({
             if (q.length > 0) {
               setItemResults(
                 allItems.filter((i: any) =>
-                  i.name_kr.includes(q) || i.name_en.toLowerCase().includes(q.toLowerCase())
-                ).slice(0, 8)
+                  i.name_kr?.includes(q) || i.name_en?.toLowerCase().includes(q.toLowerCase())
+                ).slice(0, 10)
               );
             } else {
               setItemResults([]);
@@ -520,22 +543,38 @@ export default function PokemonPanel({
         />
         {showItemDropdown && itemResults.length > 0 && (
           <div className="autocomplete-dropdown">
-            {itemResults.map((i: any) => (
-              <div
-                key={i.id}
-                className="autocomplete-item"
-                onClick={() => {
-                  onPokemonChange({ ...pokemon, item: i.name_en.toLowerCase().replace(/ /g, "-") });
-                  setItemSearch(i.name_kr);
-                  setShowItemDropdown(false);
-                }}
-              >
-                <span>{i.name_kr}</span>
-                <span className="text-xs opacity-40 ml-auto">{i.name_en}</span>
-              </div>
-            ))}
+            {itemResults.map((i: any) => {
+              const desc = getItemDesc(i);
+              return (
+                <div
+                  key={i.id}
+                  className="autocomplete-item flex-col items-start"
+                  onClick={() => {
+                    onPokemonChange({ ...pokemon, item: i.name_en.toLowerCase().replace(/ /g, "-") });
+                    setItemSearch(i.name_kr);
+                    setShowItemDropdown(false);
+                  }}
+                >
+                  <div className="flex w-full justify-between">
+                    <span>{i.name_kr}</span>
+                    <span className="text-xs opacity-40">{i.name_en}</span>
+                  </div>
+                  {desc && <div className="text-[10px] opacity-50 w-full">{desc}</div>}
+                </div>
+              );
+            })}
           </div>
         )}
+        {/* 선택된 도구 효과 표시 */}
+        {pokemon.item && (() => {
+          const selectedItem = allItems.find((i: any) =>
+            i.name_en.toLowerCase().replace(/ /g, "-") === pokemon.item
+          );
+          const desc = selectedItem ? getItemDesc(selectedItem) : null;
+          return desc ? (
+            <div className="text-[10px] mt-0.5 opacity-50" style={{ color: "#78c850" }}>{desc}</div>
+          ) : null;
+        })()}
       </div>
 
       {/* 상태이상 */}
