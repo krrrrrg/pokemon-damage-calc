@@ -54,13 +54,71 @@ const EV_PRESETS_STANDARD: { label: string; evs: Record<StatName, number> }[] = 
 ];
 
 // 도구 효과 설명
+const ITEM_DESC_MAP: Record<string, string> = {
+  survives_ohko: "HP 풀일 때 일격기를 HP 1로 버팀",
+  "heal_25%": "HP 50% 이하 시 HP 25% 회복",
+  "heal_1/16": "매 턴 HP 1/16 회복",
+  "heal_1/16_poison": "독 타입: 매 턴 HP 1/16 회복 / 그 외: 1/8 감소",
+  "survive_10%": "10% 확률로 HP 1로 버팀",
+  "contact_1/6": "접촉기로 공격받으면 상대 HP 1/6 감소",
+  reset_stat_drop: "능력치 하락 1회 초기화",
+  force_switch: "공격받으면 상대 강제 교체",
+  switch_on_hit: "공격받으면 자신 교체",
+  switch_on_stat_drop: "능력치 하락 시 자신 교체",
+  super_effective_hit: "효과발군 피격 시 공격/특공 +2",
+  prevent_stat_drop: "상대에 의한 능력치 하락 방지",
+  ignore_hazards: "설치기 데미지 무시",
+  ignore_weather_powder: "날씨 데미지/가루 기술 무효",
+  heal_20hp: "HP 50% 이하 시 HP 20 회복",
+  heal_10hp: "HP 50% 이하 시 HP 10 회복",
+  cure_status: "상태이상 1회 회복",
+  cure_paralysis: "마비 회복",
+  cure_poison: "독 회복",
+  cure_burn: "화상 회복",
+  cure_freeze: "얼음 회복",
+  cure_sleep: "잠듦 회복",
+  "crit_rate+1": "급소율 +1 단계",
+  "accuracy_1.1x": "명중률 1.1배",
+  "spa+1_on_water_hit": "물 기술 피격 시 특공 +1",
+  "atk+1_on_electric_hit": "전기 기술 피격 시 공격 +1",
+  "atk+1_on_ice_hit": "얼음 기술 피격 시 공격 +1",
+  screen_8turns: "벽 지속 8턴으로 연장",
+  rain_8turns: "비 지속 8턴",
+  sun_8turns: "쾌청 지속 8턴",
+  snow_8turns: "설경 지속 8턴",
+  sand_8turns: "모래바람 지속 8턴",
+  "trap_1/6": "구속 데미지 1/6으로 증가",
+  "def+1_grassy": "그래스필드 시 방어 +1",
+  "def+1_electric": "일렉트릭필드 시 방어 +1",
+  "spd+1_psychic": "사이코필드 시 특방 +1",
+  "spd+1_misty": "미스트필드 시 특방 +1",
+  "multi_hit_4-5": "연속기 최소 4회 보장",
+  money_2x: "상금 2배",
+  "heal_1/8_dmg": "준 데미지의 1/8 회복",
+  "spa+1_on_sound": "소리 기술 사용 시 특공 +1",
+  cure_infatuation: "헤롱헤롱/앵콜 등 해제",
+  levitate_until_hit: "공격받을 때까지 부유 (땅 무효)",
+  "spe+1_low_hp": "HP 25% 이하 시 스피드 +1",
+  "spa+1_low_hp": "HP 25% 이하 시 특공 +1",
+  "atk+1_low_hp": "HP 25% 이하 시 공격 +1",
+  "def+1_low_hp": "HP 25% 이하 시 방어 +1",
+  "spd+1_low_hp": "HP 25% 이하 시 특방 +1",
+  priority_low_hp: "HP 25% 이하 시 다음 턴 선제행동",
+};
+
 function getItemDesc(item: any): string | null {
   if (!item) return null;
+  // condition 기반 설명
+  if (item.condition && ITEM_DESC_MAP[item.condition]) {
+    return ITEM_DESC_MAP[item.condition];
+  }
   if (item.damage_modifier && item.condition) {
     const cond = item.condition.startsWith("type:") ? `${item.condition.replace("type:", "")} 타입` :
+      item.condition.startsWith("super_effective:") ? `${item.condition.replace("super_effective:", "")} 효과발군 시 1회` :
       item.condition === "super_effective" ? "효과발군 시" :
       item.condition === "physical" ? "물리기술" :
-      item.condition === "special" ? "특수기술" : item.condition;
+      item.condition === "special" ? "특수기술" :
+      item.condition.startsWith("gem:") ? `${item.condition.replace("gem:", "")} 1회` : item.condition;
     return `데미지 x${item.damage_modifier} (${cond})`;
   }
   if (item.damage_modifier) return `데미지 x${item.damage_modifier}`;
@@ -70,7 +128,8 @@ function getItemDesc(item: any): string | null {
       item.stat_modifier === "def" ? "방어" :
       item.stat_modifier === "spd" ? "특방" :
       item.stat_modifier === "spe" ? "스피드" :
-      item.stat_modifier === "def,spd" ? "방어/특방" : item.stat_modifier;
+      item.stat_modifier === "def,spd" ? "방어/특방" :
+      item.stat_modifier === "atk,spa" ? "공격/특공" : item.stat_modifier;
     return `${stat} x${item.stat_multiplier}`;
   }
   return null;
