@@ -445,16 +445,16 @@ export default function PokemonPanel({
         </div>
       )}
 
-      {/* 스프라이트 + 타입 + HP + 레벨 (컴팩트) */}
+      {/* 스프라이트 + 타입 + HP + 레벨 (초컴팩트) */}
       {pokemon.name && (
-        <div className="flex items-center gap-2 p-2 rounded-lg"
+        <div className="flex items-center gap-2 p-1.5 rounded-lg"
              style={{ background: "linear-gradient(135deg, #fff8e7 0%, #fefcf3 100%)", border: "2px solid #e8dcb0" }}>
           <div
             className="flex-shrink-0 rounded-lg flex items-center justify-center"
             style={{
-              width: 72, height: 72,
+              width: 52, height: 52,
               background: "radial-gradient(circle at 50% 60%, #f5f0e1 0%, #e8e0d0 60%, #d4c89a 100%)",
-              border: "2px solid #d4c89a",
+              border: "1.5px solid #d4c89a",
               overflow: "hidden",
             }}
           >
@@ -462,14 +462,14 @@ export default function PokemonPanel({
               <img
                 src={spriteUrl}
                 alt={searchQuery || pokemon.name}
-                style={{ width: 68, height: 68, imageRendering: "pixelated", filter: "drop-shadow(1px 2px 0 rgba(0,0,0,0.15))" }}
+                style={{ width: 48, height: 48, imageRendering: "pixelated", filter: "drop-shadow(1px 2px 0 rgba(0,0,0,0.15))" }}
                 onError={(e) => { (e.target as HTMLImageElement).style.display = "none"; }}
               />
             )}
           </div>
-          <div className="flex flex-col gap-1 flex-1 min-w-0">
+          <div className="flex flex-col gap-0.5 flex-1 min-w-0">
             <div className="flex items-center justify-between gap-2">
-              <div className="text-sm font-bold truncate" style={{ color: "#3b2d1b" }}>
+              <div className="text-xs font-bold truncate" style={{ color: "#3b2d1b", fontSize: 13 }}>
                 {searchQuery || pokemon.name}
               </div>
               <div className="flex items-center gap-1 flex-shrink-0">
@@ -477,22 +477,21 @@ export default function PokemonPanel({
                 <input
                   className="pixel-input text-center"
                   type="number" min={1} max={100}
-                  style={{ width: 52, padding: "4px 6px", fontSize: 14 }}
+                  style={{ width: 46, padding: "2px 4px", fontSize: 13, minHeight: 0 }}
                   value={pokemon.level}
                   onChange={(e) => updateAndRecalc({ level: Number(e.target.value) || 50 })}
                 />
               </div>
             </div>
-            <div className="flex gap-1 flex-wrap">
-              <TypeBadge type={pokemon.types[0]} />
-              {pokemon.types[1] && <TypeBadge type={pokemon.types[1]} />}
-            </div>
-            <div className="flex items-center gap-1.5">
-              <span className="text-xs" style={{ color: "#8b7e6a", minWidth: 20 }}>HP</span>
-              <div className="hp-bar flex-1" style={{ height: 10 }}>
+            <div className="flex items-center gap-1">
+              <div className="flex gap-0.5">
+                <TypeBadge type={pokemon.types[0]} />
+                {pokemon.types[1] && <TypeBadge type={pokemon.types[1]} />}
+              </div>
+              <div className="hp-bar flex-1 ml-1" style={{ height: 8 }}>
                 <div className="hp-bar-fill hp-green" style={{ width: "100%" }} />
               </div>
-              <span className="text-xs font-bold" style={{ color: "#3b2d1b", minWidth: 32, textAlign: "right" }}>
+              <span className="text-xs font-bold" style={{ color: "#3b2d1b", minWidth: 28, textAlign: "right", fontSize: 12 }}>
                 {actualStats.hp}
               </span>
             </div>

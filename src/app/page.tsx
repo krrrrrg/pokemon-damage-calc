@@ -48,37 +48,25 @@ export default function Home() {
       className="h-screen flex flex-col overflow-hidden"
       style={{ background: "linear-gradient(180deg, #2b2d42 0%, #1a1b2e 100%)" }}
     >
-      {/* Compact App Header */}
+      {/* Minimal App Header — 아이콘 전용 */}
       <header
-        className="flex-shrink-0 flex items-center justify-between px-3 py-2 gap-2"
+        className="flex-shrink-0 flex items-center justify-between px-3 py-1.5 gap-2"
         style={{
           background: "linear-gradient(135deg, #e3350d 0%, #ff6b4a 50%, #f0c040 100%)",
-          borderBottom: "3px solid #b71c1c",
+          borderBottom: "2px solid #b71c1c",
           boxShadow: "0 2px 8px rgba(0,0,0,0.2)",
         }}
       >
-        <div className="flex items-center gap-2 flex-shrink-0">
-          <img
-            src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/versions/generation-v/black-white/animated/25.gif"
-            alt="Pikachu"
-            style={{
-              width: 38,
-              height: 38,
-              imageRendering: "pixelated",
-              filter: "drop-shadow(1px 2px 0 rgba(0,0,0,0.25))",
-            }}
-          />
-          <h1
-            className="text-lg font-bold"
-            style={{
-              color: "#fff",
-              textShadow: "0 2px 0 #b71c1c",
-              letterSpacing: "0.5px",
-            }}
-          >
-            데미지 계산기
-          </h1>
-        </div>
+        <img
+          src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/versions/generation-v/black-white/animated/25.gif"
+          alt="Pokemon Damage Calculator"
+          style={{
+            width: 36,
+            height: 36,
+            imageRendering: "pixelated",
+            filter: "drop-shadow(1px 2px 0 rgba(0,0,0,0.25))",
+          }}
+        />
 
         <div className="flex items-center gap-2 flex-shrink-0">
           <Link
@@ -86,12 +74,11 @@ export default function Home() {
             className="flex items-center justify-center"
             title="위키"
             style={{
-              width: 40,
-              height: 40,
-              background: "rgba(255,255,255,0.25)",
-              borderRadius: 10,
-              border: "2px solid rgba(255,255,255,0.4)",
-              fontSize: 20,
+              width: 34, height: 34,
+              background: "rgba(255,255,255,0.22)",
+              borderRadius: 8,
+              border: "2px solid rgba(255,255,255,0.35)",
+              fontSize: 18,
             }}
           >
             📖
@@ -100,7 +87,7 @@ export default function Home() {
             className="flex items-center"
             style={{
               background: "rgba(0,0,0,0.2)",
-              borderRadius: 10,
+              borderRadius: 8,
               border: "2px solid rgba(255,255,255,0.2)",
               overflow: "hidden",
             }}
@@ -109,14 +96,11 @@ export default function Home() {
               onClick={() => setGameMode("standard")}
               title="본편 모드"
               style={{
-                width: 40,
-                height: 36,
-                fontSize: 16,
-                fontWeight: "bold",
+                width: 34, height: 30,
+                fontSize: 14, fontWeight: "bold",
                 color: gameMode === "standard" ? "#fff" : "rgba(255,255,255,0.6)",
                 background: gameMode === "standard" ? "#e3350d" : "transparent",
-                border: "none",
-                cursor: "pointer",
+                border: "none", cursor: "pointer",
               }}
             >
               본
@@ -125,14 +109,11 @@ export default function Home() {
               onClick={() => setGameMode("champions")}
               title="포챔스"
               style={{
-                width: 40,
-                height: 36,
-                fontSize: 16,
-                fontWeight: "bold",
+                width: 34, height: 30,
+                fontSize: 14, fontWeight: "bold",
                 color: gameMode === "champions" ? "#fff" : "rgba(255,255,255,0.6)",
                 background: gameMode === "champions" ? "#e3350d" : "transparent",
-                border: "none",
-                cursor: "pointer",
+                border: "none", cursor: "pointer",
               }}
             >
               챔
