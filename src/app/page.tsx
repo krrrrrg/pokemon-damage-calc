@@ -18,7 +18,6 @@ export default function Home() {
   const [attackerMoves, setAttackerMoves] = useState<(Move | null)[]>([null, null, null, null]);
   const [field, setField] = useState<Field>({ ...DEFAULT_FIELD });
 
-  // 실시간 계산
   const results = useMemo(() => {
     return attackerMoves.map((move) => {
       if (!move || !attacker.name || !defender.name) {
@@ -29,7 +28,6 @@ export default function Home() {
     }).filter((r) => r.move);
   }, [attacker, defender, attackerMoves, field]);
 
-  // 첫 번째 선택된 기술로 우선도 비교
   const selectedMove = attackerMoves.find((m) => m !== null) ?? null;
 
   const speedComparison = useMemo(() => {
@@ -43,51 +41,86 @@ export default function Home() {
   }, [defender]);
 
   return (
-    <div className="min-h-screen flex flex-col" style={{ background: "#18181b" }}>
-      {/* Top bar */}
+    <div className="min-h-screen flex flex-col" style={{ background: "linear-gradient(180deg, #2b2d42 0%, #1a1b2e 100%)" }}>
+      {/* Header */}
       <header
-        className="border-b-4"
+        className="relative"
         style={{
-          background: "#202020",
-          borderColor: "#303030",
+          background: "linear-gradient(135deg, #e3350d 0%, #ff6b4a 50%, #f0c040 100%)",
+          boxShadow: "0 4px 20px rgba(227, 53, 13, 0.3)",
         }}
       >
         <div className="max-w-7xl mx-auto flex items-center justify-between px-4 py-3">
-          <h1
-            className="text-base tracking-wide"
-            style={{ color: "#f0f0f0" }}
-          >
-            ▶ 포켓몬 데미지 계산기
-          </h1>
+          <div className="flex items-center gap-3">
+            <div
+              style={{
+                width: 28,
+                height: 28,
+                borderRadius: "50%",
+                background: "#fff",
+                border: "3px solid #b71c1c",
+                boxShadow: "inset 0 -14px 0 #e53935, inset 0 -16px 0 #333",
+                position: "relative",
+              }}
+            >
+              <div
+                style={{
+                  position: "absolute",
+                  top: "50%",
+                  left: "50%",
+                  transform: "translate(-50%, -50%)",
+                  width: 8,
+                  height: 8,
+                  borderRadius: "50%",
+                  background: "#fff",
+                  border: "2px solid #333",
+                }}
+              />
+            </div>
+            <h1
+              className="text-base tracking-wide"
+              style={{ color: "#fff", textShadow: "0 2px 4px rgba(0,0,0,0.3)" }}
+            >
+              포켓몬 데미지 계산기
+            </h1>
+          </div>
 
           <div className="flex items-center gap-3">
-          <Link href="/wiki" className="pixel-btn text-xs">
-            위키
-          </Link>
-          {/* 모드 토글 */}
-          <div className="mode-toggle">
-            <button
-              className={gameMode === "standard" ? "active" : ""}
-              onClick={() => setGameMode("standard")}
+            <Link
+              href="/wiki"
+              className="text-xs px-3 py-1.5"
+              style={{
+                background: "rgba(255,255,255,0.2)",
+                borderRadius: 8,
+                color: "#fff",
+                border: "1px solid rgba(255,255,255,0.3)",
+              }}
             >
-              본편
-            </button>
-            <button
-              className={gameMode === "champions" ? "active" : ""}
-              onClick={() => setGameMode("champions")}
-            >
-              포챔스
-            </button>
-          </div>
+              위키
+            </Link>
+            <div className="mode-toggle">
+              <button
+                className={gameMode === "standard" ? "active" : ""}
+                onClick={() => setGameMode("standard")}
+              >
+                본편
+              </button>
+              <button
+                className={gameMode === "champions" ? "active" : ""}
+                onClick={() => setGameMode("champions")}
+              >
+                포챔스
+              </button>
+            </div>
           </div>
         </div>
       </header>
 
-      {/* Main content */}
+      {/* Main */}
       <main className="flex-1 p-3 max-w-7xl mx-auto w-full">
         <div className="flex flex-col lg:flex-row gap-3">
-          {/* 공격측 */}
-          <div className="lg:w-[360px] w-full flex-shrink-0">
+          {/* Attacker */}
+          <div className="lg:w-[380px] w-full flex-shrink-0">
             <PokemonPanel
               label="공격"
               pokemon={attacker}
@@ -98,7 +131,7 @@ export default function Home() {
             />
           </div>
 
-          {/* 중앙: 필드 + 결과 */}
+          {/* Center: Field + Results */}
           <div className="flex-1 flex flex-col gap-3 min-w-0">
             <FieldPanel field={field} onFieldChange={setField} />
             <ResultPanel
@@ -111,8 +144,8 @@ export default function Home() {
             />
           </div>
 
-          {/* 방어측 */}
-          <div className="lg:w-[360px] w-full flex-shrink-0">
+          {/* Defender */}
+          <div className="lg:w-[380px] w-full flex-shrink-0">
             <PokemonPanel
               label="방어"
               pokemon={defender}
@@ -126,15 +159,9 @@ export default function Home() {
       </main>
 
       {/* Footer */}
-      <footer
-        className="border-t-3 text-center py-2"
-        style={{
-          background: "#202020",
-          borderTop: "3px solid #303030",
-        }}
-      >
-        <span className="text-xs" style={{ color: "#606060" }}>
-          포켓몬 데미지 계산기 | 데이터: PokeAPI + Supabase
+      <footer className="text-center py-3" style={{ borderTop: "1px solid rgba(255,255,255,0.06)" }}>
+        <span className="text-xs" style={{ color: "rgba(255,255,255,0.3)" }}>
+          Pokemon Damage Calculator | Data: PokeAPI + Supabase
         </span>
       </footer>
     </div>

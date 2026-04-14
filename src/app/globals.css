@@ -5,17 +5,25 @@
 @custom-variant dark (&:is(.dark *));
 
 :root {
-  /* Game Boy pixel palette */
-  --gb-bg: #18181b;
-  --gb-panel: #f8f8f0;
-  --gb-border: #303030;
-  --gb-accent-red: #e53935;
-  --gb-accent-green: #78c850;
-  --gb-text: #303030;
-  --gb-text-light: #f0f0f0;
-  --gb-hp-green: #78c850;
-  --gb-hp-yellow: #f8d030;
-  --gb-hp-red: #f03830;
+  /* Pokemon-inspired warm palette */
+  --poke-bg: #2b2d42;
+  --poke-bg-light: #3a3d56;
+  --poke-panel: #fefcf3;
+  --poke-panel-warm: #fff8e7;
+  --poke-border: #d4c89a;
+  --poke-border-dark: #8b7e56;
+  --poke-accent-red: #e3350d;
+  --poke-accent-blue: #0075be;
+  --poke-accent-gold: #f0c040;
+  --poke-accent-green: #4daf50;
+  --poke-text: #3b2d1b;
+  --poke-text-light: #f5f0e1;
+  --poke-text-muted: #8b7e6a;
+  --poke-hp-green: #4daf50;
+  --poke-hp-yellow: #fbc02d;
+  --poke-hp-red: #e53935;
+  --poke-shadow: rgba(59, 45, 27, 0.15);
+
   --background: oklch(1 0 0);
   --foreground: oklch(0.145 0 0);
   --card: oklch(1 0 0);
@@ -51,8 +59,8 @@
 }
 
 @theme inline {
-  --color-background: var(--gb-bg);
-  --color-foreground: var(--gb-text-light);
+  --color-background: var(--poke-bg);
+  --color-foreground: var(--poke-text-light);
   --font-sans: "DungGeunMo", monospace;
   --font-mono: "DungGeunMo", monospace;
   --font-heading: "DungGeunMo", monospace;
@@ -95,7 +103,7 @@
 }
 
 /* ========================================
-   Game Boy Pixel Art Global Styles
+   Global Base
    ======================================== */
 
 * {
@@ -104,27 +112,48 @@
 }
 
 body {
-  background: var(--gb-bg);
-  color: var(--gb-text-light);
+  background: var(--poke-bg);
+  color: var(--poke-text-light);
   min-height: 100vh;
 }
 
 /* ========================================
-   Pixel Panel
+   Pokemon Panel (main card)
    ======================================== */
 
 .pixel-panel {
-  background: var(--gb-panel);
-  border: 3px solid var(--gb-border);
-  border-radius: 0;
-  color: var(--gb-text);
+  background: var(--poke-panel);
+  border: 3px solid var(--poke-border);
+  border-radius: 12px;
+  color: var(--poke-text);
+  box-shadow:
+    0 4px 0 var(--poke-border-dark),
+    0 6px 12px var(--poke-shadow);
+  position: relative;
+}
+
+.pixel-panel::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: linear-gradient(90deg,
+    var(--poke-accent-red) 0%,
+    var(--poke-accent-gold) 50%,
+    var(--poke-accent-blue) 100%
+  );
+  border-radius: 10px 10px 0 0;
+  opacity: 0.6;
 }
 
 .pixel-panel-dark {
-  background: #282828;
-  border: 3px solid #505050;
-  border-radius: 0;
-  color: var(--gb-text-light);
+  background: var(--poke-bg-light);
+  border: 2px solid rgba(255, 255, 255, 0.1);
+  border-radius: 10px;
+  color: var(--poke-text-light);
+  box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.2);
 }
 
 /* ========================================
@@ -133,19 +162,21 @@ body {
 
 .pixel-input {
   background: #fff;
-  border: 2px solid var(--gb-border);
-  border-radius: 0;
-  padding: 4px 8px;
+  border: 2px solid var(--poke-border);
+  border-radius: 6px;
+  padding: 5px 10px;
   font-size: 14px;
-  color: var(--gb-text);
+  color: var(--poke-text);
   outline: none;
-  transition: border-color 0.1s;
+  transition: all 0.15s ease;
+  box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.06);
 }
 .pixel-input:focus {
-  border-color: var(--gb-accent-red);
+  border-color: var(--poke-accent-blue);
+  box-shadow: 0 0 0 3px rgba(0, 117, 190, 0.15), inset 0 1px 3px rgba(0, 0, 0, 0.06);
 }
 .pixel-input:disabled {
-  background: #d8d8d0;
+  background: #f0ece0;
   opacity: 0.6;
   cursor: not-allowed;
 }
@@ -156,12 +187,15 @@ body {
 
 .pixel-select {
   background: #fff;
-  border: 2px solid var(--gb-border);
-  border-radius: 0;
-  padding: 4px 8px;
+  border: 2px solid var(--poke-border);
+  border-radius: 6px;
+  padding: 5px 10px;
   font-size: 14px;
-  color: var(--gb-text);
+  color: var(--poke-text);
   cursor: pointer;
+}
+.pixel-select:focus {
+  border-color: var(--poke-accent-blue);
 }
 
 /* ========================================
@@ -169,55 +203,63 @@ body {
    ======================================== */
 
 .pixel-btn {
-  background: var(--gb-panel);
-  border: 2px solid var(--gb-border);
-  border-radius: 0;
-  color: var(--gb-text);
-  padding: 4px 12px;
+  background: var(--poke-panel-warm);
+  border: 2px solid var(--poke-border);
+  border-radius: 8px;
+  color: var(--poke-text);
+  padding: 5px 14px;
   font-size: 13px;
   font-weight: 400;
   cursor: pointer;
-  transition: all 0.1s;
+  transition: all 0.15s ease;
+  box-shadow: 0 2px 0 var(--poke-border-dark);
 }
 .pixel-btn:hover {
-  background: #e0e0d8;
+  background: #f5edd0;
+  transform: translateY(-1px);
+  box-shadow: 0 3px 0 var(--poke-border-dark);
 }
 .pixel-btn:active {
   transform: translateY(1px);
+  box-shadow: 0 0px 0 var(--poke-border-dark);
 }
 .pixel-btn.active {
-  background: var(--gb-border);
+  background: var(--poke-accent-blue);
+  border-color: #005a8f;
   color: #fff;
+  box-shadow: 0 2px 0 #004a7a;
 }
 
 .pixel-btn-red {
-  background: var(--gb-accent-red);
+  background: var(--poke-accent-red);
   border: 2px solid #b71c1c;
-  border-radius: 0;
+  border-radius: 8px;
   color: #fff;
-  padding: 4px 12px;
+  padding: 5px 14px;
   font-size: 13px;
   cursor: pointer;
+  box-shadow: 0 2px 0 #8b1a1a;
 }
 .pixel-btn-red:hover {
   background: #c62828;
 }
 
 .pixel-btn-green {
-  background: var(--gb-accent-green);
-  border: 2px solid #4e8c30;
-  border-radius: 0;
+  background: var(--poke-accent-green);
+  border: 2px solid #2e7d32;
+  border-radius: 8px;
   color: #fff;
-  padding: 4px 12px;
+  padding: 5px 14px;
   font-size: 13px;
   cursor: pointer;
+  box-shadow: 0 2px 0 #1b5e20;
 }
 .pixel-btn-green:hover {
-  background: #66a840;
+  background: #43a047;
 }
 
 .pixel-btn-sm {
-  padding: 2px 8px;
+  padding: 3px 10px;
   font-size: 12px;
   border-width: 2px;
 }
@@ -230,154 +272,176 @@ body {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  min-width: 28px;
-  height: 22px;
-  padding: 0 6px;
+  min-width: 30px;
+  height: 24px;
+  padding: 0 7px;
   font-size: 12px;
-  border-radius: 0;
-  border: 2px solid var(--gb-border);
-  background: var(--gb-panel);
-  color: var(--gb-text);
+  border-radius: 6px;
+  border: 2px solid var(--poke-border);
+  background: var(--poke-panel-warm);
+  color: var(--poke-text);
   cursor: pointer;
-  transition: all 0.1s;
+  transition: all 0.12s ease;
+  box-shadow: 0 1px 0 var(--poke-border-dark);
 }
 .ev-quick-btn:hover {
-  background: var(--gb-accent-green);
+  background: var(--poke-accent-green);
   color: #fff;
-  border-color: #4e8c30;
+  border-color: #2e7d32;
+  transform: translateY(-1px);
 }
 .ev-quick-btn:active {
   transform: translateY(1px);
+  box-shadow: none;
 }
 .ev-quick-btn.active {
-  background: var(--gb-accent-green);
+  background: var(--poke-accent-green);
   color: #fff;
-  border-color: #4e8c30;
+  border-color: #2e7d32;
+  box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.2);
 }
 
 /* ========================================
-   HP Bar (pixelated)
+   HP Bar (Pokemon-style)
    ======================================== */
 
 .hp-bar {
-  height: 10px;
-  border-radius: 0;
-  background: #404040;
+  height: 12px;
+  border-radius: 6px;
+  background: #3a3528;
   overflow: hidden;
-  border: 2px solid var(--gb-border);
+  border: 2px solid #5a5040;
+  box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.3);
 }
 .hp-bar-fill {
   height: 100%;
-  border-radius: 0;
-  transition: width 0.3s ease;
+  border-radius: 4px;
+  transition: width 0.4s ease;
 }
-.hp-bar-fill.hp-green { background: var(--gb-hp-green); }
-.hp-bar-fill.hp-yellow { background: var(--gb-hp-yellow); }
-.hp-bar-fill.hp-red { background: var(--gb-hp-red); }
+.hp-bar-fill.hp-green {
+  background: linear-gradient(180deg, #6ddf70 0%, #4daf50 50%, #3d8f40 100%);
+}
+.hp-bar-fill.hp-yellow {
+  background: linear-gradient(180deg, #ffe066 0%, #fbc02d 50%, #f0a020 100%);
+}
+.hp-bar-fill.hp-red {
+  background: linear-gradient(180deg, #ff6b6b 0%, #e53935 50%, #c62828 100%);
+}
 
 /* ========================================
-   Type Badges
+   Type Badges (rounded pill style)
    ======================================== */
 
 .type-badge {
   display: inline-flex;
   align-items: center;
-  padding: 1px 8px;
-  border-radius: 0;
-  font-size: 12px;
+  padding: 2px 10px;
+  border-radius: 10px;
+  font-size: 11px;
   color: #fff;
   letter-spacing: 0.5px;
-  border: 1px solid rgba(0,0,0,0.2);
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.15);
 }
 .type-normal { background: #a8a878; }
 .type-fighting { background: #c03028; }
 .type-flying { background: #a890f0; }
 .type-poison { background: #a040a0; }
-.type-ground { background: #e0c068; color: #303030; }
+.type-ground { background: #e0c068; color: #5a4a20; text-shadow: none; }
 .type-rock { background: #b8a038; }
 .type-bug { background: #a8b820; }
 .type-ghost { background: #705898; }
-.type-steel { background: #b8b8d0; color: #303030; }
+.type-steel { background: #b8b8d0; color: #404060; text-shadow: none; }
 .type-fire { background: #f08030; }
 .type-water { background: #6890f0; }
 .type-grass { background: #78c850; }
-.type-electric { background: #f8d030; color: #303030; }
+.type-electric { background: #f8d030; color: #5a4a10; text-shadow: none; }
 .type-psychic { background: #f85888; }
-.type-ice { background: #98d8d8; color: #303030; }
+.type-ice { background: #98d8d8; color: #2a6060; text-shadow: none; }
 .type-dragon { background: #7038f8; }
 .type-dark { background: #705848; }
 .type-fairy { background: #ee99ac; }
-.type-stellar { background: linear-gradient(90deg, #ff6b6b, #ffd93d, #6bff6b, #6bb5ff, #d06bff); }
+.type-stellar {
+  background: linear-gradient(90deg, #ff6b6b, #ffd93d, #6bff6b, #6bb5ff, #d06bff);
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.4);
+}
 
 /* ========================================
    Effectiveness Text
    ======================================== */
 
-.eff-immune { color: #888; font-weight: bold; }
-.eff-not-very { color: #a0522d; }
-.eff-neutral { color: var(--gb-text); }
-.eff-super { color: var(--gb-accent-red); font-weight: bold; }
-.eff-ultra { color: #b71c1c; font-weight: bold; }
+.eff-immune { color: #999; font-weight: bold; }
+.eff-not-very { color: #a0724d; }
+.eff-neutral { color: var(--poke-text); }
+.eff-super { color: var(--poke-accent-red); font-weight: bold; }
+.eff-ultra { color: #b71c1c; font-weight: bold; text-shadow: 0 0 4px rgba(227, 53, 13, 0.3); }
 
 /* ========================================
-   Stat Bar (pixel)
+   Stat Bar (improved)
    ======================================== */
 
 .stat-bar {
-  height: 8px;
-  border-radius: 0;
-  background: #c8c8c0;
+  height: 10px;
+  border-radius: 5px;
+  background: #e8e0d0;
   overflow: hidden;
-  border: 1px solid var(--gb-border);
+  border: 1px solid var(--poke-border);
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.08);
 }
 .stat-bar-fill {
   height: 100%;
-  border-radius: 0;
+  border-radius: 4px;
+  transition: width 0.3s ease;
 }
 
 /* ========================================
-   Mode Toggle (pixel)
+   Mode Toggle
    ======================================== */
 
 .mode-toggle {
   display: inline-flex;
-  border: 3px solid var(--gb-border);
-  border-radius: 0;
+  border: 2px solid rgba(255, 255, 255, 0.2);
+  border-radius: 10px;
   overflow: hidden;
+  background: rgba(0, 0, 0, 0.2);
 }
 .mode-toggle button {
-  padding: 6px 16px;
-  font-size: 14px;
-  color: var(--gb-text-light);
-  background: #404040;
+  padding: 6px 18px;
+  font-size: 13px;
+  color: rgba(255, 255, 255, 0.6);
+  background: transparent;
   border: none;
   cursor: pointer;
-  transition: all 0.1s;
-  border-right: 2px solid var(--gb-border);
+  transition: all 0.15s ease;
 }
-.mode-toggle button:last-child {
-  border-right: none;
+.mode-toggle button:hover {
+  color: rgba(255, 255, 255, 0.9);
 }
 .mode-toggle button.active {
   color: #fff;
-  background: var(--gb-accent-red);
+  background: var(--poke-accent-red);
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(227, 53, 13, 0.4);
 }
 
 /* ========================================
-   Pixel Dialog (Pokemon battle text box)
+   Pixel Dialog (Battle message box)
    ======================================== */
 
 .pixel-dialog {
-  background: var(--gb-panel);
-  border: 3px solid var(--gb-border);
-  border-bottom-width: 4px;
-  border-radius: 0;
-  padding: 12px 16px;
-  color: var(--gb-text);
+  background: var(--poke-panel);
+  border: 3px solid var(--poke-border);
+  border-radius: 12px;
+  padding: 14px 18px;
+  color: var(--poke-text);
+  box-shadow:
+    0 3px 0 var(--poke-border-dark),
+    0 4px 10px var(--poke-shadow);
+  position: relative;
 }
 
 /* ========================================
-   Autocomplete Dropdown (pixel)
+   Autocomplete Dropdown
    ======================================== */
 
 .autocomplete-dropdown {
@@ -386,62 +450,72 @@ body {
   left: 0;
   right: 0;
   background: #fff;
-  border: 2px solid var(--gb-border);
+  border: 2px solid var(--poke-border);
   border-top: none;
-  border-radius: 0;
-  max-height: 200px;
+  border-radius: 0 0 8px 8px;
+  max-height: 220px;
   overflow-y: auto;
   z-index: 50;
+  box-shadow: 0 4px 12px var(--poke-shadow);
 }
 .autocomplete-item {
-  padding: 6px 10px;
+  padding: 8px 12px;
   cursor: pointer;
   font-size: 14px;
-  color: var(--gb-text);
+  color: var(--poke-text);
   display: flex;
   align-items: center;
   gap: 8px;
+  transition: background 0.1s;
 }
 .autocomplete-item:hover {
-  background: #e8e8e0;
+  background: var(--poke-panel-warm);
+}
+.autocomplete-item:last-child {
+  border-radius: 0 0 6px 6px;
 }
 
 /* ========================================
-   Pixel Toggle (field buttons)
+   Pixel Toggle (field option buttons)
    ======================================== */
 
 .pixel-toggle {
   font-size: 12px;
-  padding: 4px 10px;
-  border-radius: 0;
-  border: 2px solid #505050;
-  background: #383838;
-  color: var(--gb-text-light);
+  padding: 5px 12px;
+  border-radius: 8px;
+  border: 2px solid rgba(255, 255, 255, 0.12);
+  background: rgba(255, 255, 255, 0.06);
+  color: rgba(255, 255, 255, 0.7);
   cursor: pointer;
-  transition: all 0.1s;
+  transition: all 0.15s ease;
 }
 .pixel-toggle:hover {
-  background: #484848;
+  background: rgba(255, 255, 255, 0.12);
+  color: #fff;
 }
 .pixel-toggle.active {
-  background: #5080c0;
-  border-color: #5080c0;
+  background: var(--poke-accent-blue);
+  border-color: var(--poke-accent-blue);
   color: #fff;
+  box-shadow: 0 0 8px rgba(0, 117, 190, 0.4);
 }
 .pixel-toggle.active-green {
-  background: var(--gb-accent-green);
-  border-color: var(--gb-accent-green);
+  background: var(--poke-accent-green);
+  border-color: var(--poke-accent-green);
   color: #fff;
+  box-shadow: 0 0 8px rgba(77, 175, 80, 0.4);
 }
 .pixel-toggle.active-gold {
-  background: #d4a017;
-  border-color: #d4a017;
-  color: #fff;
+  background: var(--poke-accent-gold);
+  border-color: #c89e30;
+  color: #3b2d1b;
+  box-shadow: 0 0 8px rgba(240, 192, 64, 0.4);
 }
 .pixel-toggle.active-red {
-  background: var(--gb-accent-red);
-  border-color: var(--gb-accent-red);
+  background: var(--poke-accent-red);
+  border-color: var(--poke-accent-red);
   color: #fff;
+  box-shadow: 0 0 8px rgba(227, 53, 13, 0.4);
 }
 
 /* ========================================
@@ -450,31 +524,201 @@ body {
 
 .ev-preset-group {
   display: flex;
-  gap: 2px;
+  gap: 3px;
   flex-wrap: wrap;
 }
 
 /* ========================================
-   Section Title (pixel)
+   Section Title
    ======================================== */
 
 .pixel-section-title {
   font-size: 12px;
-  padding: 2px 8px;
-  background: var(--gb-border);
+  padding: 4px 12px;
+  background: linear-gradient(135deg, var(--poke-border-dark) 0%, var(--poke-border) 100%);
   color: #fff;
-  border: 2px solid var(--gb-border);
-  border-radius: 0;
-  margin-bottom: 4px;
+  border-radius: 6px;
+  margin-bottom: 6px;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+  letter-spacing: 0.5px;
 }
 
 /* ========================================
-   Scrollbar (pixel)
+   Scrollbar
    ======================================== */
 
 ::-webkit-scrollbar { width: 8px; }
-::-webkit-scrollbar-track { background: #202020; }
-::-webkit-scrollbar-thumb { background: #505050; border-radius: 0; }
+::-webkit-scrollbar-track { background: rgba(0, 0, 0, 0.1); border-radius: 4px; }
+::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.15); border-radius: 4px; }
+::-webkit-scrollbar-thumb:hover { background: rgba(255, 255, 255, 0.25); }
+
+/* ========================================
+   Sprite Container
+   ======================================== */
+
+.sprite-container {
+  width: 96px;
+  height: 96px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: radial-gradient(circle at 50% 60%, #f5f0e1 0%, #e8e0d0 60%, #d4c89a 100%);
+  border: 3px solid var(--poke-border);
+  border-radius: 50%;
+  box-shadow:
+    0 2px 0 var(--poke-border-dark),
+    inset 0 2px 8px rgba(255, 255, 255, 0.5);
+  position: relative;
+  overflow: hidden;
+}
+
+.sprite-container::after {
+  content: "";
+  position: absolute;
+  top: 48%;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: var(--poke-border);
+  opacity: 0.4;
+}
+
+/* ========================================
+   Panel Header (attacker/defender label)
+   ======================================== */
+
+.panel-header-atk {
+  background: linear-gradient(90deg, var(--poke-accent-red), #ff6b4a);
+  color: #fff;
+  padding: 6px 14px;
+  border-radius: 8px;
+  font-size: 13px;
+  letter-spacing: 1px;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 2px 6px rgba(227, 53, 13, 0.3);
+}
+
+.panel-header-def {
+  background: linear-gradient(90deg, var(--poke-accent-blue), #4da6ff);
+  color: #fff;
+  padding: 6px 14px;
+  border-radius: 8px;
+  font-size: 13px;
+  letter-spacing: 1px;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 2px 6px rgba(0, 117, 190, 0.3);
+}
+
+/* ========================================
+   Damage Result Badge
+   ======================================== */
+
+.damage-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 4px 12px;
+  border-radius: 8px;
+  font-size: 16px;
+  font-weight: bold;
+  color: #fff;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+}
+
+.damage-badge-ko {
+  background: linear-gradient(135deg, #e53935, #c62828);
+  box-shadow: 0 2px 8px rgba(229, 57, 53, 0.4);
+}
+
+.damage-badge-2hko {
+  background: linear-gradient(135deg, #f57c00, #e65100);
+  box-shadow: 0 2px 8px rgba(245, 124, 0, 0.4);
+}
+
+.damage-badge-3hko {
+  background: linear-gradient(135deg, #fbc02d, #f9a825);
+  color: #3b2d1b;
+  text-shadow: none;
+  box-shadow: 0 2px 8px rgba(251, 192, 45, 0.4);
+}
+
+.damage-badge-safe {
+  background: linear-gradient(135deg, #4daf50, #388e3c);
+  box-shadow: 0 2px 8px rgba(77, 175, 80, 0.4);
+}
+
+/* ========================================
+   Mobile Responsive
+   ======================================== */
+
+@media (max-width: 767px) {
+  .pixel-panel {
+    border-radius: 10px;
+    box-shadow: 0 3px 0 var(--poke-border-dark), 0 4px 8px var(--poke-shadow);
+  }
+  .pixel-dialog {
+    padding: 10px 12px;
+    border-radius: 10px;
+  }
+  .pixel-btn,
+  .pixel-btn-red,
+  .pixel-btn-green {
+    min-height: 32px;
+    padding: 6px 12px;
+  }
+  .pixel-toggle {
+    min-height: 32px;
+    padding: 6px 10px;
+    font-size: 11px;
+  }
+  .ev-quick-btn {
+    min-height: 28px;
+    min-width: 32px;
+  }
+  .pixel-input,
+  .pixel-select {
+    min-height: 36px;
+    font-size: 14px;
+  }
+  .mode-toggle button {
+    padding: 6px 12px;
+    font-size: 12px;
+  }
+  .type-badge {
+    font-size: 10px;
+    padding: 2px 8px;
+  }
+  .sprite-container {
+    width: 80px;
+    height: 80px;
+  }
+  .panel-header-atk,
+  .panel-header-def {
+    font-size: 11px;
+    padding: 5px 10px;
+  }
+  .damage-badge {
+    font-size: 13px;
+    padding: 3px 10px;
+  }
+  /* 스탯 바 테이블 헤더는 모바일에서 축소 */
+  .hp-bar { height: 10px; }
+}
+
+/* ========================================
+   Speed Comparison Bar
+   ======================================== */
+
+.speed-bar {
+  height: 6px;
+  border-radius: 3px;
+  background: rgba(255, 255, 255, 0.08);
+  overflow: hidden;
+}
+.speed-bar-fill {
+  height: 100%;
+  border-radius: 3px;
+  transition: width 0.3s ease;
+}
 
 /* ========================================
    Dark theme overrides (shadcn compat)
