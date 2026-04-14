@@ -839,6 +839,52 @@ body {
   .tab-nav-btn .tab-emoji { font-size: 18px; }
 }
 
+/* Sub-tabs inside panel */
+.sub-tab-nav {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 4px;
+  padding: 4px;
+  background: #f0ece0;
+  border-radius: 10px;
+  border: 2px solid var(--poke-border);
+}
+
+.sub-tab-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 10px 8px;
+  border-radius: 7px;
+  background: transparent;
+  color: var(--poke-text-muted);
+  border: none;
+  cursor: pointer;
+  font-size: 15px;
+  font-weight: bold;
+  transition: all 0.15s ease;
+  white-space: nowrap;
+}
+.sub-tab-btn:hover {
+  background: #fff8e7;
+  color: var(--poke-text);
+}
+.sub-tab-btn.active {
+  background: #fff;
+  color: var(--poke-text);
+  box-shadow: 0 2px 4px rgba(0,0,0,0.08);
+  border: 1px solid var(--poke-border);
+}
+
+@media (max-width: 767px) {
+  .sub-tab-btn {
+    padding: 12px 6px;
+    font-size: 14px;
+    gap: 4px;
+  }
+}
+
 /* Bottom next-step button */
 .step-next-btn {
   display: flex;

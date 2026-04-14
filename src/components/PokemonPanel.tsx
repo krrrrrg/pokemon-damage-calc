@@ -169,6 +169,7 @@ export default function PokemonPanel({
   const [itemResults, setItemResults] = useState<any[]>([]);
   const [showItemDropdown, setShowItemDropdown] = useState(false);
   const [showPresets, setShowPresets] = useState(false);
+  const [subTab, setSubTab] = useState<"basic" | "stats" | "extras">("basic");
   const dropdownRef = useRef<HTMLDivElement>(null);
 
   const [allMoves, setAllMoves] = useState<any[]>([]);
@@ -486,9 +487,9 @@ export default function PokemonPanel({
 
       {/* 레벨 */}
       <div className="flex items-center gap-2">
-        <label className="text-xs opacity-60">레벨</label>
+        <label className="text-xs" style={{ color: "#8b7e6a" }}>레벨</label>
         <input
-          className="pixel-input w-16 text-center"
+          className="pixel-input w-20 text-center"
           type="number"
           min={1}
           max={100}
@@ -496,6 +497,31 @@ export default function PokemonPanel({
           onChange={(e) => updateAndRecalc({ level: Number(e.target.value) || 50 })}
         />
       </div>
+
+      {/* 서브탭 네비게이션 */}
+      <div className="sub-tab-nav">
+        <button
+          className={`sub-tab-btn ${subTab === "basic" ? "active" : ""}`}
+          onClick={() => setSubTab("basic")}
+        >
+          ⚙ 기본
+        </button>
+        <button
+          className={`sub-tab-btn ${subTab === "stats" ? "active" : ""}`}
+          onClick={() => setSubTab("stats")}
+        >
+          📊 스탯
+        </button>
+        <button
+          className={`sub-tab-btn ${subTab === "extras" ? "active" : ""}`}
+          onClick={() => setSubTab("extras")}
+        >
+          {label === "공격" ? "⚡ 기술" : "🎭 기믹"}
+        </button>
+      </div>
+
+      {/* [기본 탭] 성격/특성/도구/상태이상 */}
+      {subTab === "basic" && (<>
 
       {/* 성격 보정 (스탯별 0.9 / 1.0 / 1.1) */}
       <div>
@@ -683,6 +709,11 @@ export default function PokemonPanel({
         </select>
       </div>
 
+      </>)}
+
+      {/* [스탯 탭] 종족값/EV/IV/랭크 */}
+      {subTab === "stats" && (<>
+
       {/* 종족값 + 실능 */}
       {pokemon.baseStats.hp > 0 && (
         <div className="flex flex-col gap-1.5">
@@ -855,6 +886,11 @@ export default function PokemonPanel({
         </div>
       </details>
 
+      </>)}
+
+      {/* [기술/기믹 탭] */}
+      {subTab === "extras" && (<>
+
       {/* 배틀 기믹 */}
       {pokemon.name && (
         <GimmickPanel
@@ -921,6 +957,8 @@ export default function PokemonPanel({
           ))}
         </div>
       )}
+
+      </>)}
     </div>
   );
 }
