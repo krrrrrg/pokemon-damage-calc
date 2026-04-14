@@ -538,45 +538,41 @@ export default function PokemonPanel({
       {/* [기본 탭] 성격/특성/도구/상태이상 */}
       {subTab === "basic" && (<>
 
-      {/* 성격 보정 (스탯별 0.9 / 1.0 / 1.1) */}
+      {/* 성격 보정 (컴팩트: 5×2 그리드) */}
       <div>
-        <label className="text-xs opacity-60 block mb-1">성격 보정</label>
+        <label className="text-xs block mb-1" style={{ color: "#8b7e6a" }}>
+          성격: {pokemon.nature.plus && pokemon.nature.minus
+            ? <><span style={{ color: "#e3350d" }}>+{STAT_LABELS[pokemon.nature.plus]}</span> / <span style={{ color: "#0075be" }}>-{STAT_LABELS[pokemon.nature.minus]}</span></>
+            : <span style={{ color: "#8b7e6a" }}>무보정</span>}
+        </label>
         <div className="grid grid-cols-5 gap-1">
           {(["atk", "def", "spa", "spd", "spe"] as const).map((stat) => {
             const mod = pokemon.nature.plus === stat ? 1.1 : pokemon.nature.minus === stat ? 0.9 : 1.0;
             return (
-              <div key={stat} className="text-center">
-                <div className="text-[10px] opacity-50 mb-0.5">{STAT_LABELS[stat]}</div>
-                <div className="flex gap-0.5">
+              <div key={stat} className="flex flex-col items-center gap-0.5">
+                <div className="text-[11px]" style={{ color: "#8b7e6a" }}>{STAT_LABELS[stat]}</div>
+                <div className="flex w-full gap-0.5">
                   {[0.9, 1.0, 1.1].map((val) => (
                     <button
                       key={val}
-                      className="flex-1 text-[10px] py-0.5"
+                      className="flex-1 rounded"
                       style={{
+                        height: 24,
+                        fontSize: 12,
                         background: mod === val
-                          ? val === 1.1 ? "#e53935" : val === 0.9 ? "#5080c0" : "#606060"
-                          : "#e8e8e0",
-                        color: mod === val ? "#fff" : "#303030",
-                        border: "2px solid #303030",
+                          ? val === 1.1 ? "#e3350d" : val === 0.9 ? "#0075be" : "#8b7e6a"
+                          : "#fff",
+                        color: mod === val ? "#fff" : "#3b2d1b",
+                        border: mod === val ? "1.5px solid currentColor" : "1.5px solid #d4c89a",
+                        fontWeight: mod === val ? "bold" : "normal",
                       }}
                       onClick={() => {
                         let plus: StatName | null = pokemon.nature.plus;
                         let minus: StatName | null = pokemon.nature.minus;
-
-                        if (val === 1.1) {
-                          plus = stat;
-                          if (minus === stat) minus = null;
-                        } else if (val === 0.9) {
-                          minus = stat;
-                          if (plus === stat) plus = null;
-                        } else {
-                          if (plus === stat) plus = null;
-                          if (minus === stat) minus = null;
-                        }
-
-                        updateAndRecalc({
-                          nature: { name: "Custom", plus, minus },
-                        });
+                        if (val === 1.1) { plus = stat; if (minus === stat) minus = null; }
+                        else if (val === 0.9) { minus = stat; if (plus === stat) plus = null; }
+                        else { if (plus === stat) plus = null; if (minus === stat) minus = null; }
+                        updateAndRecalc({ nature: { name: "Custom", plus, minus } });
                       }}
                     >
                       {val === 0.9 ? "↓" : val === 1.1 ? "↑" : "−"}
@@ -591,7 +587,7 @@ export default function PokemonPanel({
 
       {/* 특성 */}
       <div className="relative">
-        <label className="text-xs opacity-60 block mb-0.5">특성</label>
+        <label className="text-xs block mb-0.5" style={{ color: "#8b7e6a" }}>특성</label>
         {pokemonAbilities.length > 0 ? (
           <select
             className="pixel-select w-full"
@@ -653,7 +649,7 @@ export default function PokemonPanel({
 
       {/* 도구 */}
       <div className="relative">
-        <label className="text-xs opacity-60 block mb-0.5">도구</label>
+        <label className="text-xs block mb-0.5" style={{ color: "#8b7e6a" }}>도구</label>
         <input
           className="pixel-input w-full"
           value={itemSearch}
@@ -712,7 +708,7 @@ export default function PokemonPanel({
 
       {/* 상태이상 */}
       <div>
-        <label className="text-xs opacity-60 block mb-0.5">상태이상</label>
+        <label className="text-xs block mb-0.5" style={{ color: "#8b7e6a" }}>상태이상</label>
         <select
           className="pixel-select w-full"
           value={pokemon.status}
@@ -726,180 +722,180 @@ export default function PokemonPanel({
 
       </>)}
 
-      {/* [스탯 탭] 종족값/EV/IV/랭크 */}
+      {/* [스탯 탭] 통합 스탯/EV */}
       {subTab === "stats" && (<>
 
-      {/* 종족값 + 실능 */}
-      {pokemon.baseStats.hp > 0 && (
-        <div className="flex flex-col gap-1.5">
-          <div className="pixel-section-title">▶ 스탯</div>
-          <div className="flex justify-end text-[10px] gap-2 pr-1 mb-0.5" style={{ color: "#8b7e6a" }}>
-            <span className="w-6"></span>
-            <span className="w-8 text-right">종족</span>
-            <span className="flex-1 text-center">바</span>
-            <span className="w-10 text-right">EV</span>
-            <span className="w-10 text-right">실능</span>
-          </div>
-          <div className="p-2 rounded-lg" style={{ background: "#faf6ea", border: "1px solid #e8dcb0" }}>
-            {STAT_KEYS.map((stat) => (
-              <StatBar
-                key={stat}
-                stat={stat}
-                base={pokemon.baseStats[stat]}
-                actual={actualStats[stat]}
-                ev={pokemon.evs[stat]}
-              />
-            ))}
-          </div>
+      {/* EV 총합 + 리셋/프리셋 */}
+      <div className="flex items-center justify-between">
+        <div className="flex items-center gap-1.5">
+          <span className="text-xs font-bold" style={{ color: "#3b2d1b" }}>노력치 (EV)</span>
+          <button
+            className="ev-quick-btn"
+            style={{ fontSize: 12, minWidth: 36, height: 26 }}
+            onClick={resetEvs}
+          >
+            리셋
+          </button>
+          {gameMode === "standard" && (
+            <button
+              className={`ev-quick-btn ${showPresets ? "active" : ""}`}
+              style={{ fontSize: 12, minWidth: 44, height: 26 }}
+              onClick={() => setShowPresets(!showPresets)}
+            >
+              프리셋
+            </button>
+          )}
+        </div>
+        <span
+          className="text-xs font-bold px-2 py-0.5 rounded"
+          style={{
+            background: evTotal > evMax ? "#fef0c7" : "#f0f0e8",
+            color: evTotal > evMax ? "#e3350d" : "#3b2d1b",
+            border: evTotal > evMax ? "1px solid #e3350d" : "1px solid #e8dcb0",
+          }}
+        >
+          {evTotal}/{evMax}
+        </span>
+      </div>
+
+      {/* EV 프리셋 패널 */}
+      {showPresets && gameMode === "standard" && (
+        <div className="flex flex-wrap gap-1 p-2 rounded-lg" style={{ background: "#f0ece0", border: "1px solid #e8dcb0" }}>
+          {EV_PRESETS_STANDARD.map((preset) => (
+            <button
+              key={preset.label}
+              className="ev-quick-btn"
+              style={{ fontSize: 11, padding: "0 6px", height: 24 }}
+              onClick={() => applyEvPreset(preset.evs)}
+            >
+              {preset.label}
+            </button>
+          ))}
         </div>
       )}
 
-      {/* 개체값 */}
-      <details className="text-xs">
-        <summary className="cursor-pointer opacity-60 text-xs hover:opacity-80">
-          개체값 (IV) {gameMode === "champions" ? "- 31 고정" : ""}
-        </summary>
-        <div className="grid grid-cols-6 gap-1 mt-1.5">
-          {STAT_KEYS.map((stat) => (
-            <div key={stat} className="text-center">
-              <label className="text-[10px] opacity-50">{STAT_SHORT[stat]}</label>
-              <input
-                className="pixel-input w-full text-center text-xs"
-                type="number"
-                min={0}
-                max={31}
-                value={pokemon.ivs[stat]}
-                disabled={gameMode === "champions"}
-                onChange={(e) => {
-                  const val = Math.min(31, Math.max(0, Number(e.target.value) || 0));
-                  updateAndRecalc({ ivs: { ...pokemon.ivs, [stat]: val } });
-                }}
-              />
-            </div>
-          ))}
-        </div>
-      </details>
-
-      {/* 노력치 (EV) + 퀵 버튼 */}
-      <div>
-        <div className="flex items-center justify-between mb-1.5">
-          <div className="flex items-center gap-2">
-            <span className="text-xs opacity-60">노력치 (EV)</span>
-            <button
-              className="ev-quick-btn text-[10px]"
-              onClick={resetEvs}
-              title="EV 전체 리셋"
-            >
-              리셋
-            </button>
-            {gameMode === "standard" && (
-              <button
-                className={`ev-quick-btn text-[10px] ${showPresets ? "active" : ""}`}
-                onClick={() => setShowPresets(!showPresets)}
-                title="EV 프리셋"
-              >
-                프리셋
-              </button>
-            )}
+      {/* 통합 스탯 테이블: 종족 | EV | 퀵 | 실능 */}
+      {pokemon.baseStats.hp > 0 && (
+        <div className="flex flex-col gap-1 p-2 rounded-lg" style={{ background: "#faf6ea", border: "1px solid #e8dcb0" }}>
+          {/* 헤더 */}
+          <div className="flex items-center gap-1.5 text-[11px] pb-1" style={{ color: "#8b7e6a", borderBottom: "1px dashed #d4c89a" }}>
+            <span className="flex-shrink-0" style={{ width: 28 }}></span>
+            <span className="flex-shrink-0 text-right" style={{ width: 32 }}>종족</span>
+            <span className="flex-shrink-0 text-center" style={{ width: 60 }}>EV</span>
+            <span className="flex-1 text-center">퀵</span>
+            <span className="flex-shrink-0 text-right" style={{ width: 44 }}>실능</span>
           </div>
-          <span className={`text-xs ${evTotal > evMax ? "text-red-600" : ""}`}>
-            {evTotal}/{evMax}
-          </span>
-        </div>
 
-        {/* EV 프리셋 패널 */}
-        {showPresets && gameMode === "standard" && (
-          <div className="flex flex-wrap gap-1 mb-2 p-1.5" style={{ background: "#f0f0e8", border: "2px solid #303030" }}>
-            {EV_PRESETS_STANDARD.map((preset) => (
-              <button
-                key={preset.label}
-                className="ev-quick-btn text-[10px] px-2"
-                onClick={() => applyEvPreset(preset.evs)}
-              >
-                {preset.label}
-              </button>
-            ))}
-          </div>
-        )}
-
-        {/* EV 입력 + 퀵 버튼 */}
-        <div className="flex flex-col gap-1.5 p-2 rounded-lg"
-             style={{ background: "#faf6ea", border: "1px solid #e8dcb0" }}>
           {STAT_KEYS.map((stat) => {
             const color = stat === "hp" ? "#e53935" : stat === "atk" ? "#f08030" : stat === "def" ? "#f0c040" : stat === "spa" ? "#6890f0" : stat === "spd" ? "#4daf50" : "#f85888";
+            const natureMod = pokemon.nature.plus === stat ? 1.1 : pokemon.nature.minus === stat ? 0.9 : 1.0;
             return (
-              <div key={stat} className="flex items-center gap-1.5 flex-wrap sm:flex-nowrap">
+              <div key={stat} className="flex items-center gap-1.5">
                 <span
-                  className="w-6 h-6 flex items-center justify-center rounded text-[11px] font-bold flex-shrink-0"
-                  style={{ background: color, color: "#fff", textShadow: "0 1px 1px rgba(0,0,0,0.3)" }}
+                  className="flex-shrink-0 flex items-center justify-center rounded font-bold"
+                  style={{ width: 28, height: 28, background: color, color: "#fff", fontSize: 13, textShadow: "0 1px 1px rgba(0,0,0,0.3)" }}
                 >
                   {STAT_SHORT[stat]}
                 </span>
+                <span className="flex-shrink-0 text-right text-xs" style={{ width: 32, color: "#8b7e6a" }}>
+                  {pokemon.baseStats[stat]}
+                </span>
                 <input
-                  className="pixel-input w-14 text-center text-xs flex-shrink-0"
-                  type="number"
-                  min={0}
-                  max={evPerStatMax}
+                  className="pixel-input text-center flex-shrink-0"
+                  type="number" min={0} max={evPerStatMax}
                   step={gameMode === "champions" ? 1 : 4}
+                  style={{ width: 60, padding: "4px 4px", fontSize: 14 }}
                   value={pokemon.evs[stat]}
                   onChange={(e) => {
                     const val = Math.min(evPerStatMax, Math.max(0, Number(e.target.value) || 0));
                     updateAndRecalc({ evs: { ...pokemon.evs, [stat]: val } });
                   }}
                 />
-                <div className="ev-preset-group">
+                <div className="flex-1 flex gap-1 justify-center">
                   {evQuickValues.map((v) => (
                     <button
                       key={v}
                       className={`ev-quick-btn ${pokemon.evs[stat] === v ? "active" : ""}`}
+                      style={{ fontSize: 12, minWidth: 34, height: 26, padding: 0 }}
                       onClick={() => setEV(stat, v)}
                     >
                       {v}
                     </button>
                   ))}
                 </div>
-                <span className="text-xs ml-auto font-bold flex-shrink-0" style={{ color: "#3b2d1b", minWidth: 40, textAlign: "right" }}>
-                  → {actualStats[stat]}
+                <span className="flex-shrink-0 text-right font-bold" style={{ width: 44, color: "#3b2d1b", fontSize: 14 }}>
+                  {natureMod === 1.1 && <span style={{ color: "#e3350d", fontSize: 11 }}>↑</span>}
+                  {natureMod === 0.9 && <span style={{ color: "#0075be", fontSize: 11 }}>↓</span>}
+                  {actualStats[stat]}
                 </span>
               </div>
             );
           })}
         </div>
-      </div>
+      )}
 
-      {/* 능력 랭크 */}
-      <details className="text-xs">
-        <summary className="cursor-pointer opacity-60 text-xs hover:opacity-80">능력 랭크</summary>
-        <div className="grid grid-cols-5 gap-1 mt-1.5">
-          {(["atk", "def", "spa", "spd", "spe"] as const).map((stat) => (
-            <div key={stat} className="text-center">
-              <label className="text-[10px] opacity-50">{STAT_SHORT[stat]}</label>
-              <div className="flex items-center justify-center gap-0.5">
-                <button
-                  className="ev-quick-btn w-5 h-5 text-xs leading-none"
-                  onClick={() => {
-                    const val = Math.max(-6, pokemon.boosts[stat] - 1);
-                    onPokemonChange({ ...pokemon, boosts: { ...pokemon.boosts, [stat]: val } });
+      {/* 개체값 / 능력 랭크 (접기) */}
+      <div className="grid grid-cols-2 gap-2">
+        <details className="text-xs">
+          <summary className="cursor-pointer text-xs px-2 py-1 rounded"
+            style={{ background: "#f0ece0", color: "#5a4a20", border: "1px solid #d4c89a" }}>
+            개체값 (IV) {gameMode === "champions" ? "· 31" : ""}
+          </summary>
+          <div className="grid grid-cols-6 gap-1 mt-2 p-2 rounded" style={{ background: "#faf6ea" }}>
+            {STAT_KEYS.map((stat) => (
+              <div key={stat} className="text-center">
+                <label className="text-[10px]" style={{ color: "#8b7e6a" }}>{STAT_SHORT[stat]}</label>
+                <input
+                  className="pixel-input w-full text-center" style={{ padding: "3px 0", fontSize: 12 }}
+                  type="number" min={0} max={31}
+                  value={pokemon.ivs[stat]}
+                  disabled={gameMode === "champions"}
+                  onChange={(e) => {
+                    const val = Math.min(31, Math.max(0, Number(e.target.value) || 0));
+                    updateAndRecalc({ ivs: { ...pokemon.ivs, [stat]: val } });
                   }}
-                >-</button>
-                <span className={`w-6 text-center text-xs ${
-                  pokemon.boosts[stat] > 0 ? "text-[#78c850]" :
-                  pokemon.boosts[stat] < 0 ? "text-[#e53935]" : ""
-                }`}>
-                  {pokemon.boosts[stat] > 0 ? `+${pokemon.boosts[stat]}` : pokemon.boosts[stat]}
-                </span>
-                <button
-                  className="ev-quick-btn w-5 h-5 text-xs leading-none"
-                  onClick={() => {
-                    const val = Math.min(6, pokemon.boosts[stat] + 1);
-                    onPokemonChange({ ...pokemon, boosts: { ...pokemon.boosts, [stat]: val } });
-                  }}
-                >+</button>
+                />
               </div>
-            </div>
-          ))}
-        </div>
-      </details>
+            ))}
+          </div>
+        </details>
+
+        <details className="text-xs">
+          <summary className="cursor-pointer text-xs px-2 py-1 rounded"
+            style={{ background: "#f0ece0", color: "#5a4a20", border: "1px solid #d4c89a" }}>
+            능력 랭크
+          </summary>
+          <div className="grid grid-cols-5 gap-1 mt-2 p-2 rounded" style={{ background: "#faf6ea" }}>
+            {(["atk", "def", "spa", "spd", "spe"] as const).map((stat) => (
+              <div key={stat} className="text-center">
+                <label className="text-[10px]" style={{ color: "#8b7e6a" }}>{STAT_SHORT[stat]}</label>
+                <div className="flex items-center justify-center gap-0.5">
+                  <button
+                    className="ev-quick-btn" style={{ width: 18, height: 18, minWidth: 18, fontSize: 11, padding: 0 }}
+                    onClick={() => {
+                      const val = Math.max(-6, pokemon.boosts[stat] - 1);
+                      onPokemonChange({ ...pokemon, boosts: { ...pokemon.boosts, [stat]: val } });
+                    }}
+                  >-</button>
+                  <span className="text-xs" style={{
+                    width: 20, textAlign: "center",
+                    color: pokemon.boosts[stat] > 0 ? "#4daf50" : pokemon.boosts[stat] < 0 ? "#e3350d" : "#3b2d1b",
+                  }}>
+                    {pokemon.boosts[stat] > 0 ? `+${pokemon.boosts[stat]}` : pokemon.boosts[stat]}
+                  </span>
+                  <button
+                    className="ev-quick-btn" style={{ width: 18, height: 18, minWidth: 18, fontSize: 11, padding: 0 }}
+                    onClick={() => {
+                      const val = Math.min(6, pokemon.boosts[stat] + 1);
+                      onPokemonChange({ ...pokemon, boosts: { ...pokemon.boosts, [stat]: val } });
+                    }}
+                  >+</button>
+                </div>
+              </div>
+            ))}
+          </div>
+        </details>
+      </div>
 
       </>)}
 
