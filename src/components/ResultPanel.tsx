@@ -175,23 +175,23 @@ export default function ResultPanel({
                 }}
               >
                 <div>
-                  <div className="text-[10px] mb-0.5" style={{ color: "#8b7e6a" }}>데미지</div>
+                  <div className="text-xs mb-1" style={{ color: "#8b7e6a" }}>데미지</div>
                   <div className="flex items-baseline gap-2">
-                    <span className="text-2xl font-bold" style={{ color: "#e3350d" }}>
+                    <span className="text-3xl font-bold" style={{ color: "#e3350d" }}>
                       {result.minPercent.toFixed(1)}
                     </span>
-                    <span className="text-sm" style={{ color: "#8b7e6a" }}>
+                    <span className="text-base" style={{ color: "#8b7e6a" }}>
                       ~
                     </span>
-                    <span className="text-2xl font-bold" style={{ color: "#e3350d" }}>
+                    <span className="text-3xl font-bold" style={{ color: "#e3350d" }}>
                       {result.maxPercent.toFixed(1)}
                     </span>
-                    <span className="text-sm" style={{ color: "#8b7e6a" }}>%</span>
+                    <span className="text-lg" style={{ color: "#8b7e6a" }}>%</span>
                   </div>
                 </div>
                 <div className="text-right">
-                  <div className="text-[10px] mb-0.5" style={{ color: "#8b7e6a" }}>실제 수치</div>
-                  <div className="text-sm font-bold" style={{ color: "#3b2d1b" }}>
+                  <div className="text-xs mb-1" style={{ color: "#8b7e6a" }}>실제 수치</div>
+                  <div className="text-base font-bold" style={{ color: "#3b2d1b" }}>
                     {result.minDamage} ~ {result.maxDamage}
                   </div>
                 </div>

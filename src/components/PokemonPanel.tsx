@@ -453,8 +453,8 @@ export default function PokemonPanel({
               <img
                 src={spriteUrl}
                 alt={searchQuery || pokemon.name}
-                className="w-20 h-20"
-                style={{ imageRendering: "pixelated", position: "relative", zIndex: 1 }}
+                className="w-24 h-24"
+                style={{ imageRendering: "pixelated", position: "relative", zIndex: 1, filter: "drop-shadow(2px 3px 0 rgba(0,0,0,0.15))" }}
                 onError={(e) => { (e.target as HTMLImageElement).style.display = "none"; }}
               />
             )}

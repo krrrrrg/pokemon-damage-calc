@@ -48,55 +48,67 @@ export default function Home() {
         style={{
           background: "linear-gradient(135deg, #e3350d 0%, #ff6b4a 50%, #f0c040 100%)",
           boxShadow: "0 4px 20px rgba(227, 53, 13, 0.3)",
+          borderBottom: "4px solid #b71c1c",
         }}
       >
-        <div className="max-w-7xl mx-auto flex items-center justify-between px-4 py-3">
-          <div className="flex items-center gap-3">
-            <div
+        <div className="max-w-7xl mx-auto flex items-center justify-between px-4 py-4 gap-3">
+          <div className="flex items-center gap-3 flex-1 min-w-0">
+            {/* 피카츄 도트 로고 */}
+            <img
+              src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/versions/generation-v/black-white/animated/25.gif"
+              alt="Pikachu"
+              className="hidden sm:block flex-shrink-0"
               style={{
-                width: 28,
-                height: 28,
-                borderRadius: "50%",
-                background: "#fff",
-                border: "3px solid #b71c1c",
-                boxShadow: "inset 0 -14px 0 #e53935, inset 0 -16px 0 #333",
-                position: "relative",
+                width: 56,
+                height: 56,
+                imageRendering: "pixelated",
+                filter: "drop-shadow(2px 3px 0 rgba(0,0,0,0.25))",
               }}
-            >
-              <div
+            />
+            <img
+              src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/25.png"
+              alt="Pikachu"
+              className="sm:hidden flex-shrink-0"
+              style={{
+                width: 44,
+                height: 44,
+                imageRendering: "pixelated",
+                filter: "drop-shadow(2px 3px 0 rgba(0,0,0,0.25))",
+              }}
+            />
+            <div className="flex flex-col min-w-0">
+              <h1
+                className="text-xl sm:text-2xl tracking-wide truncate"
                 style={{
-                  position: "absolute",
-                  top: "50%",
-                  left: "50%",
-                  transform: "translate(-50%, -50%)",
-                  width: 8,
-                  height: 8,
-                  borderRadius: "50%",
-                  background: "#fff",
-                  border: "2px solid #333",
+                  color: "#fff",
+                  textShadow: "0 2px 0 #b71c1c, 0 3px 6px rgba(0,0,0,0.3)",
+                  letterSpacing: "1px",
                 }}
-              />
+              >
+                포켓몬 데미지 계산기
+              </h1>
+              <span
+                className="text-[11px] sm:text-xs hidden sm:block"
+                style={{ color: "rgba(255,255,255,0.85)", textShadow: "0 1px 2px rgba(0,0,0,0.3)" }}
+              >
+                POKEMON DAMAGE CALCULATOR
+              </span>
             </div>
-            <h1
-              className="text-base tracking-wide"
-              style={{ color: "#fff", textShadow: "0 2px 4px rgba(0,0,0,0.3)" }}
-            >
-              포켓몬 데미지 계산기
-            </h1>
           </div>
 
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2 flex-shrink-0">
             <Link
               href="/wiki"
-              className="text-xs px-3 py-1.5"
+              className="text-sm px-3 py-2"
               style={{
-                background: "rgba(255,255,255,0.2)",
-                borderRadius: 8,
+                background: "rgba(255,255,255,0.25)",
+                borderRadius: 10,
                 color: "#fff",
-                border: "1px solid rgba(255,255,255,0.3)",
+                border: "2px solid rgba(255,255,255,0.4)",
+                textShadow: "0 1px 2px rgba(0,0,0,0.3)",
               }}
             >
-              위키
+              📖 위키
             </Link>
             <div className="mode-toggle">
               <button
@@ -159,9 +171,31 @@ export default function Home() {
       </main>
 
       {/* Footer */}
-      <footer className="text-center py-3" style={{ borderTop: "1px solid rgba(255,255,255,0.06)" }}>
-        <span className="text-xs" style={{ color: "rgba(255,255,255,0.3)" }}>
-          Pokemon Damage Calculator | Data: PokeAPI + Supabase
+      <footer className="py-4 flex flex-col items-center gap-2" style={{ borderTop: "1px solid rgba(255,255,255,0.06)" }}>
+        <div className="flex items-center gap-2 opacity-70">
+          <img
+            src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/1.png"
+            alt="" width={32} height={32}
+            style={{ imageRendering: "pixelated" }}
+          />
+          <img
+            src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/4.png"
+            alt="" width={32} height={32}
+            style={{ imageRendering: "pixelated" }}
+          />
+          <img
+            src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/7.png"
+            alt="" width={32} height={32}
+            style={{ imageRendering: "pixelated" }}
+          />
+          <img
+            src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/25.png"
+            alt="" width={32} height={32}
+            style={{ imageRendering: "pixelated" }}
+          />
+        </div>
+        <span className="text-xs" style={{ color: "rgba(255,255,255,0.4)" }}>
+          Pokemon Damage Calculator · PokeAPI + Supabase
         </span>
       </footer>
     </div>
