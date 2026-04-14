@@ -62,23 +62,22 @@ export default function ResultPanel({
       {/* 스피드 비교 */}
       {speedComparison && (
         <div
-          className="rounded-xl p-3"
+          className="rounded-2xl p-3"
           style={{
-            background: "linear-gradient(135deg, #3a3d56 0%, #2b2d42 100%)",
-            border: "1px solid rgba(255,255,255,0.1)",
-            boxShadow: "0 2px 8px rgba(0,0,0,0.2)",
+            background: "#ffffff",
+            border: "1.5px solid #dfe4ec",
+            boxShadow: "0 1px 3px rgba(30,41,59,0.04), 0 6px 16px rgba(30,41,59,0.06)",
           }}
         >
           <div className="flex items-center justify-between mb-2">
-            <span className="text-[11px]" style={{ color: "#f0c040" }}>⚡ 선공 판정</span>
+            <span className="text-xs font-bold" style={{ color: "#f59e0b" }}>⚡ 선공 판정</span>
             <span
               className="text-xs font-bold px-2 py-0.5 rounded"
               style={{
-                background: speedComparison.first === "attacker" ? "#e3350d"
-                         : speedComparison.first === "defender" ? "#0075be"
-                         : "#f0c040",
+                background: speedComparison.first === "attacker" ? "#ef4444"
+                         : speedComparison.first === "defender" ? "#3b82f6"
+                         : "#f59e0b",
                 color: "#fff",
-                textShadow: "0 1px 2px rgba(0,0,0,0.3)",
               }}
             >
               {speedComparison.first === "attacker" ? "▶ 공격측"
@@ -87,38 +86,38 @@ export default function ResultPanel({
             </span>
           </div>
 
-          <div className="flex items-center gap-2 text-[11px]">
-            <span style={{ color: "#e3350d", minWidth: 40 }}>
+          <div className="flex items-center gap-2 text-xs">
+            <span style={{ color: "#ef4444", minWidth: 40, fontWeight: "bold" }}>
               {speedComparison.attackerSpeed}
             </span>
             <div className="flex-1 flex items-center gap-1">
-              <div className="speed-bar flex-1">
+              <div className="speed-bar flex-1" style={{ background: "#f1f5f9" }}>
                 <div
                   className="speed-bar-fill"
                   style={{
                     width: `${speedComparison.attackerSpeed / (speedComparison.attackerSpeed + speedComparison.defenderSpeed) * 100}%`,
-                    background: "#e3350d",
+                    background: "#ef4444",
                   }}
                 />
               </div>
-              <span className="text-[10px]" style={{ color: "#8b7e6a" }}>vs</span>
-              <div className="speed-bar flex-1">
+              <span className="text-[10px]" style={{ color: "#94a3b8" }}>vs</span>
+              <div className="speed-bar flex-1" style={{ background: "#f1f5f9" }}>
                 <div
                   className="speed-bar-fill"
                   style={{
                     width: `${speedComparison.defenderSpeed / (speedComparison.attackerSpeed + speedComparison.defenderSpeed) * 100}%`,
-                    background: "#0075be",
+                    background: "#3b82f6",
                     marginLeft: "auto",
                   }}
                 />
               </div>
             </div>
-            <span style={{ color: "#0075be", minWidth: 40, textAlign: "right" }}>
+            <span style={{ color: "#3b82f6", minWidth: 40, textAlign: "right", fontWeight: "bold" }}>
               {speedComparison.defenderSpeed}
             </span>
           </div>
 
-          <div className="text-[10px] mt-1.5" style={{ color: "rgba(255,255,255,0.5)" }}>
+          <div className="text-xs mt-1.5" style={{ color: "#94a3b8" }}>
             {speedComparison.reason}
             {(speedComparison.attackerPriority !== 0 || speedComparison.defenderPriority !== 0) && (
               <span className="ml-2">
@@ -269,21 +268,22 @@ export default function ResultPanel({
       {/* 내구 수치 */}
       {defender.name && (
         <div
-          className="rounded-xl p-3 flex items-center justify-between text-xs"
+          className="rounded-2xl p-3 flex items-center justify-between text-xs"
           style={{
-            background: "linear-gradient(135deg, #3a3d56 0%, #2b2d42 100%)",
-            border: "1px solid rgba(255,255,255,0.1)",
+            background: "#ffffff",
+            border: "1.5px solid #dfe4ec",
+            boxShadow: "0 1px 3px rgba(30,41,59,0.04)",
           }}
         >
-          <span style={{ color: "#f0c040" }}>🛡️ 방어측 내구</span>
+          <span className="font-bold" style={{ color: "#f59e0b" }}>🛡️ 방어측 내구</span>
           <div className="flex gap-4">
             <span>
-              <span style={{ color: "rgba(255,255,255,0.5)" }}>물리:</span>
-              <span className="ml-1 font-bold" style={{ color: "#fff" }}>{physicalBulk.toLocaleString()}</span>
+              <span style={{ color: "#94a3b8" }}>물리:</span>
+              <span className="ml-1 font-bold" style={{ color: "#1e293b" }}>{physicalBulk.toLocaleString()}</span>
             </span>
             <span>
-              <span style={{ color: "rgba(255,255,255,0.5)" }}>특수:</span>
-              <span className="ml-1 font-bold" style={{ color: "#fff" }}>{specialBulk.toLocaleString()}</span>
+              <span style={{ color: "#94a3b8" }}>특수:</span>
+              <span className="ml-1 font-bold" style={{ color: "#1e293b" }}>{specialBulk.toLocaleString()}</span>
             </span>
           </div>
         </div>

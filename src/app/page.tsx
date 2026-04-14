@@ -46,15 +46,14 @@ export default function Home() {
   return (
     <div
       className="h-screen flex flex-col overflow-hidden"
-      style={{ background: "linear-gradient(180deg, #2b2d42 0%, #1a1b2e 100%)" }}
+      style={{ background: "linear-gradient(180deg, #eef2f7 0%, #f5f7fa 100%)" }}
     >
       {/* Minimal App Header — 아이콘 전용 */}
       <header
-        className="flex-shrink-0 flex items-center justify-between px-3 py-1.5 gap-2"
+        className="flex-shrink-0 flex items-center justify-between px-3 py-2 gap-2"
         style={{
-          background: "linear-gradient(135deg, #e3350d 0%, #ff6b4a 50%, #f0c040 100%)",
-          borderBottom: "2px solid #b71c1c",
-          boxShadow: "0 2px 8px rgba(0,0,0,0.2)",
+          background: "linear-gradient(135deg, #ef4444 0%, #f87171 50%, #fbbf24 100%)",
+          boxShadow: "0 2px 12px rgba(239, 68, 68, 0.15)",
         }}
       >
         <img
@@ -74,11 +73,11 @@ export default function Home() {
             className="flex items-center justify-center"
             title="위키"
             style={{
-              width: 34, height: 34,
-              background: "rgba(255,255,255,0.22)",
-              borderRadius: 8,
-              border: "2px solid rgba(255,255,255,0.35)",
+              width: 36, height: 36,
+              background: "rgba(255,255,255,0.95)",
+              borderRadius: 10,
               fontSize: 18,
+              boxShadow: "0 2px 6px rgba(0,0,0,0.1)",
             }}
           >
             📖
@@ -86,20 +85,20 @@ export default function Home() {
           <div
             className="flex items-center"
             style={{
-              background: "rgba(0,0,0,0.2)",
-              borderRadius: 8,
-              border: "2px solid rgba(255,255,255,0.2)",
+              background: "rgba(255,255,255,0.95)",
+              borderRadius: 10,
               overflow: "hidden",
+              boxShadow: "0 2px 6px rgba(0,0,0,0.1)",
             }}
           >
             <button
               onClick={() => setGameMode("standard")}
               title="본편 모드"
               style={{
-                width: 34, height: 30,
+                width: 34, height: 32,
                 fontSize: 14, fontWeight: "bold",
-                color: gameMode === "standard" ? "#fff" : "rgba(255,255,255,0.6)",
-                background: gameMode === "standard" ? "#e3350d" : "transparent",
+                color: gameMode === "standard" ? "#fff" : "#64748b",
+                background: gameMode === "standard" ? "#ef4444" : "transparent",
                 border: "none", cursor: "pointer",
               }}
             >
@@ -109,10 +108,10 @@ export default function Home() {
               onClick={() => setGameMode("champions")}
               title="포챔스"
               style={{
-                width: 34, height: 30,
+                width: 34, height: 32,
                 fontSize: 14, fontWeight: "bold",
-                color: gameMode === "champions" ? "#fff" : "rgba(255,255,255,0.6)",
-                background: gameMode === "champions" ? "#e3350d" : "transparent",
+                color: gameMode === "champions" ? "#fff" : "#64748b",
+                background: gameMode === "champions" ? "#ef4444" : "transparent",
                 border: "none", cursor: "pointer",
               }}
             >
@@ -153,9 +152,9 @@ export default function Home() {
       </div>
 
       {/* Content Area - fills remaining space */}
-      <main className="flex-1 overflow-hidden flex flex-col px-2 pb-2 pt-2 max-w-5xl w-full mx-auto">
+      <main className="flex-1 overflow-hidden flex flex-col px-3 pb-3 pt-3 max-w-5xl w-full mx-auto gap-3">
         {activeTab === "attacker" && (
-          <div className="flex-1 flex flex-col min-h-0 gap-2">
+          <div className="flex-1 flex flex-col min-h-0 gap-3">
             <div className="flex-1 min-h-0 overflow-auto">
               <PokemonPanel
                 label="공격"
@@ -178,7 +177,7 @@ export default function Home() {
         )}
 
         {activeTab === "defender" && (
-          <div className="flex-1 flex flex-col min-h-0 gap-2">
+          <div className="flex-1 flex flex-col min-h-0 gap-3">
             <div className="flex-1 min-h-0 overflow-auto">
               <PokemonPanel
                 label="방어"
@@ -201,7 +200,7 @@ export default function Home() {
         )}
 
         {activeTab === "result" && (
-          <div className="flex-1 flex flex-col min-h-0 gap-2">
+          <div className="flex-1 flex flex-col min-h-0 gap-3">
             <div className="flex-1 min-h-0 overflow-auto flex flex-col gap-2">
               <FieldPanel field={field} onFieldChange={setField} />
               <ResultPanel

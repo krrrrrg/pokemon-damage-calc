@@ -39,21 +39,21 @@ export default function FieldPanel({ field, onFieldChange }: FieldPanelProps) {
 
   return (
     <div
-      className="rounded-xl p-3 flex flex-col gap-3 w-full"
+      className="rounded-2xl p-3 flex flex-col gap-3 w-full"
       style={{
-        background: "linear-gradient(135deg, #3a3d56 0%, #2b2d42 100%)",
-        border: "1px solid rgba(255,255,255,0.1)",
-        boxShadow: "0 2px 8px rgba(0,0,0,0.2)",
+        background: "#ffffff",
+        border: "1.5px solid #dfe4ec",
+        boxShadow: "0 1px 3px rgba(30,41,59,0.04), 0 6px 20px rgba(30,41,59,0.06)",
       }}
     >
       {/* 타이틀 */}
-      <div className="flex items-center gap-2 pb-2" style={{ borderBottom: "1px dashed rgba(240,192,64,0.3)" }}>
-        <span className="text-sm" style={{ color: "#f0c040" }}>🌤 필드 조건</span>
+      <div className="flex items-center gap-2 pb-2" style={{ borderBottom: "1px dashed #dfe4ec" }}>
+        <span className="text-sm font-bold" style={{ color: "#f59e0b" }}>🌤 필드 조건</span>
       </div>
 
       {/* 날씨 */}
       <div>
-        <label className="text-[10px] mb-1.5 block" style={{ color: "rgba(255,255,255,0.5)" }}>날씨</label>
+        <label className="text-xs mb-1.5 block font-bold" style={{ color: "#64748b" }}>날씨</label>
         <div className="grid grid-cols-5 gap-1.5">
           {WEATHER_OPTIONS.map((w) => (
             <button
@@ -72,7 +72,7 @@ export default function FieldPanel({ field, onFieldChange }: FieldPanelProps) {
 
       {/* 필드 */}
       <div>
-        <label className="text-[10px] mb-1.5 block" style={{ color: "rgba(255,255,255,0.5)" }}>필드</label>
+        <label className="text-xs mb-1.5 block font-bold" style={{ color: "#64748b" }}>필드</label>
         <div className="grid grid-cols-5 gap-1.5">
           {TERRAIN_OPTIONS.map((t) => (
             <button
@@ -91,7 +91,7 @@ export default function FieldPanel({ field, onFieldChange }: FieldPanelProps) {
 
       {/* 벽 */}
       <div>
-        <label className="text-[10px] mb-1.5 block" style={{ color: "rgba(255,255,255,0.5)" }}>벽</label>
+        <label className="text-xs mb-1.5 block font-bold" style={{ color: "#64748b" }}>벽</label>
         <div className="flex flex-wrap gap-1.5">
           {SCREEN_OPTIONS.map((s) => (
             <button
@@ -108,7 +108,7 @@ export default function FieldPanel({ field, onFieldChange }: FieldPanelProps) {
 
       {/* 배틀 옵션 */}
       <div>
-        <label className="text-[10px] mb-1.5 block" style={{ color: "rgba(255,255,255,0.5)" }}>배틀 옵션</label>
+        <label className="text-xs mb-1.5 block font-bold" style={{ color: "#64748b" }}>배틀 옵션</label>
         <div className="flex flex-wrap gap-1.5">
           <button
             className={`pixel-toggle ${field.isDouble ? "active-red" : ""}`}
@@ -139,7 +139,7 @@ export default function FieldPanel({ field, onFieldChange }: FieldPanelProps) {
 
       {/* 설치기 */}
       <div>
-        <label className="text-[10px] mb-1.5 block" style={{ color: "rgba(255,255,255,0.5)" }}>설치기 (방어측)</label>
+        <label className="text-xs mb-1.5 block font-bold" style={{ color: "#64748b" }}>설치기 (방어측)</label>
         <div className="flex flex-wrap gap-1.5">
           <button
             className={`pixel-toggle ${field.stealth_rock ? "active-gold" : ""}`}
