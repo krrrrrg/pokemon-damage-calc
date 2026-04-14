@@ -474,44 +474,67 @@ export default function PokemonPanel({
         </div>
       )}
 
-      {/* 레벨 + 성격 */}
-      <div className="grid grid-cols-2 gap-2">
-        <div>
-          <label className="text-xs opacity-60 block mb-0.5">레벨</label>
-          <input
-            className="pixel-input w-full"
-            type="number"
-            min={1}
-            max={100}
-            value={pokemon.level}
-            onChange={(e) => updateAndRecalc({ level: Number(e.target.value) || 50 })}
-          />
-        </div>
-        <div>
-          <label className="text-xs opacity-60 block mb-0.5">성격</label>
-          <select
-            className="pixel-select w-full"
-            value={pokemon.nature.name}
-            onChange={(e) => {
-              const nat = natures.find((n: any) => n.name_en === e.target.value);
-              if (nat) {
-                updateAndRecalc({
-                  nature: {
-                    name: nat.name_en,
-                    plus: nat.plus_stat as StatName | null,
-                    minus: nat.minus_stat as StatName | null,
-                  },
-                });
-              }
-            }}
-          >
-            {natures.map((n: any) => (
-              <option key={n.id} value={n.name_en}>
-                {n.name_kr}
-                {n.plus_stat ? ` (+${STAT_LABELS[n.plus_stat]}/-${STAT_LABELS[n.minus_stat]})` : ""}
-              </option>
-            ))}
-          </select>
+      {/* 레벨 */}
+      <div className="flex items-center gap-2">
+        <label className="text-xs opacity-60">레벨</label>
+        <input
+          className="pixel-input w-16 text-center"
+          type="number"
+          min={1}
+          max={100}
+          value={pokemon.level}
+          onChange={(e) => updateAndRecalc({ level: Number(e.target.value) || 50 })}
+        />
+      </div>
+
+      {/* 성격 보정 (스탯별 0.9 / 1.0 / 1.1) */}
+      <div>
+        <label className="text-xs opacity-60 block mb-1">성격 보정</label>
+        <div className="grid grid-cols-5 gap-1">
+          {(["atk", "def", "spa", "spd", "spe"] as const).map((stat) => {
+            const mod = pokemon.nature.plus === stat ? 1.1 : pokemon.nature.minus === stat ? 0.9 : 1.0;
+            return (
+              <div key={stat} className="text-center">
+                <div className="text-[10px] opacity-50 mb-0.5">{STAT_LABELS[stat]}</div>
+                <div className="flex gap-0.5">
+                  {[0.9, 1.0, 1.1].map((val) => (
+                    <button
+                      key={val}
+                      className="flex-1 text-[10px] py-0.5"
+                      style={{
+                        background: mod === val
+                          ? val === 1.1 ? "#e53935" : val === 0.9 ? "#5080c0" : "#606060"
+                          : "#e8e8e0",
+                        color: mod === val ? "#fff" : "#303030",
+                        border: "2px solid #303030",
+                      }}
+                      onClick={() => {
+                        let plus: StatName | null = pokemon.nature.plus;
+                        let minus: StatName | null = pokemon.nature.minus;
+
+                        if (val === 1.1) {
+                          plus = stat;
+                          if (minus === stat) minus = null;
+                        } else if (val === 0.9) {
+                          minus = stat;
+                          if (plus === stat) plus = null;
+                        } else {
+                          if (plus === stat) plus = null;
+                          if (minus === stat) minus = null;
+                        }
+
+                        updateAndRecalc({
+                          nature: { name: "Custom", plus, minus },
+                        });
+                      }}
+                    >
+                      {val === 0.9 ? "↓" : val === 1.1 ? "↑" : "−"}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            );
+          })}
         </div>
       </div>
 
