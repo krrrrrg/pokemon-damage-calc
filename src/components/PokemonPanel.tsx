@@ -387,11 +387,13 @@ export default function PokemonPanel({
   return (
     <div className="pixel-panel p-3 flex flex-col gap-2 w-full" ref={dropdownRef}>
       {/* 헤더 */}
-      <div className="flex items-center justify-between mb-1">
+      <div className="flex items-center justify-between mb-0.5">
         <div className={isAttacker ? "panel-header-atk" : "panel-header-def"}>
-          {isAttacker ? "ATTACKER" : "DEFENDER"}
+          {isAttacker ? "⚔ 공격" : "🛡 방어"}
         </div>
-        <span className="text-xs" style={{ color: "#8b7e6a" }}>Lv.{pokemon.level}</span>
+        {pokemon.name && (
+          <span className="text-xs font-bold" style={{ color: "#8b7e6a" }}>Lv.{pokemon.level}</span>
+        )}
       </div>
 
       {/* 포켓몬 검색 */}
