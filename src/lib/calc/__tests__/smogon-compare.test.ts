@@ -14,7 +14,7 @@ function pokemon(overrides: Partial<Pokemon>): Pokemon {
     nature: { name: "Hardy", plus: null, minus: null },
     types: ["normal", null], ability: "", item: "", status: "none",
     boosts: { ...DEFAULT_BOOSTS }, currentHP: 0, maxHP: 0, weight: 50,
-    teraType: null, teraActive: false, gimmick: "none", isGrounded: true,
+    teraType: null, teraActive: false, gimmick: "none", isGrounded: true, isUnburden: false,
   };
   const mon = { ...base, ...overrides };
   mon.maxHP = calcHP(mon.baseStats.hp, mon.ivs.hp, mon.evs.hp, mon.level);

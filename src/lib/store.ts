@@ -38,6 +38,7 @@ export function createDefaultPokemon(): Pokemon {
     teraActive: false,
     gimmick: "none",
     isGrounded: true,
+    isUnburden: false,
   };
 }
 

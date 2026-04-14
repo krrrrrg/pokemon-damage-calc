@@ -13,6 +13,7 @@ import {
   getItemMod, getItemStatMod, getAttackerAbilityMod, getDefenderAbilityMod,
   checkImmunity, getSkinAbility, getPinchAbilityMod,
   getWeatherStatMod, getDoubleSupportMod, getRuinMod, getFlashFireMod,
+  isMoldBreaker, isUnaware, getAtkStatAbilityMod, getSpeedAbilityMod,
 } from "./modifiers";
 import {
   getAttackDefenseStats, getVariablePower, getFixedDamage,
@@ -98,16 +99,21 @@ export function calculateDamage(
   // 변화기는 데미지 없음
   if (move.category === "status") return null;
 
-  // 면역 체크
-  const immunity = checkImmunity(defender.ability, move.type);
-  if (immunity.immune) {
-    return {
-      minDamage: 0, maxDamage: 0, rolls: new Array(16).fill(0),
-      minPercent: 0, maxPercent: 0,
-      koChance: { n: 999, chance: 0, text: "면역 (무효)" },
-      critDamage: { min: 0, max: 0, minPercent: 0, maxPercent: 0 },
-      attackStat: 0, defenseStat: 0, effectiveness: 0, stab: 1, power: 0, multiHit: null,
-    };
+  // 틀깨기 계열: 방어측 특성 무시
+  const breaksMold = isMoldBreaker(attacker.ability);
+
+  // 면역 체크 (틀깨기 시 특성 면역 무시)
+  if (!breaksMold) {
+    const immunity = checkImmunity(defender.ability, move.type);
+    if (immunity.immune) {
+      return {
+        minDamage: 0, maxDamage: 0, rolls: new Array(16).fill(0),
+        minPercent: 0, maxPercent: 0,
+        koChance: { n: 999, chance: 0, text: "면역 (무효)" },
+        critDamage: { min: 0, max: 0, minPercent: 0, maxPercent: 0 },
+        attackStat: 0, defenseStat: 0, effectiveness: 0, stab: 1, power: 0, multiHit: null,
+      };
+    }
   }
 
   // 1. 스탯 계산
@@ -179,8 +185,21 @@ export function calculateDamage(
   power = Math.floor(power * skinPowerMod);
 
   // 4. 공격/방어 스탯 결정 (변칙 기술 포함)
+  // 둔감(Unaware) 처리: 공격측 둔감 → 상대 방어 랭크 무시 (getAttackDefenseStats 내부에서는 처리 안됨)
+  // 방어측 둔감 → 공격측 공격 랭크 무시
+  const attackerIsUnaware = isUnaware(attacker.ability);
+  const defenderIsUnaware = isUnaware(defender.ability);
+
+  // 둔감을 위해 boosts를 일시적으로 조정
+  const effectiveAttacker = defenderIsUnaware
+    ? { ...attacker, boosts: { atk: 0, def: attacker.boosts.def, spa: 0, spd: attacker.boosts.spd, spe: attacker.boosts.spe } }
+    : attacker;
+  const effectiveDefender = attackerIsUnaware
+    ? { ...defender, boosts: { atk: defender.boosts.atk, def: 0, spa: defender.boosts.spa, spd: 0, spe: defender.boosts.spe } }
+    : defender;
+
   const statPair = getAttackDefenseStats(
-    move, attacker, defender,
+    move, effectiveAttacker, effectiveDefender,
     { atk: atkStats.atk, def: atkStats.def, spa: atkStats.spa, spd: atkStats.spd },
     { atk: defStats.atk, def: defStats.def, spa: defStats.spa, spd: defStats.spd },
     field.isCrit
@@ -199,14 +218,8 @@ export function calculateDamage(
   const ruinAtkMod = getRuinMod(defender.ability, atkStatKey);
   const ruinDefMod = getRuinMod(attacker.ability, defStatKey);
 
-  // 힘자랑패치/천하장사
-  let abilityAtkStatMod = 1.0;
-  if ((attacker.ability === "huge-power" || attacker.ability === "pure-power") && move.category === "physical") {
-    abilityAtkStatMod = 2.0;
-  }
-  if (attacker.ability === "solar-power" && field.weather === "sun" && move.category === "special") {
-    abilityAtkStatMod = 1.5;
-  }
+  // 공격측 스탯 특성 보정 (데이터 드리븐)
+  const abilityAtkStatMod = getAtkStatAbilityMod(attacker.ability, move.category as "physical" | "special", field.weather);
 
   const finalAtk = Math.floor(statPair.atk * itemAtkMod * abilityAtkStatMod * ruinAtkMod);
   const finalDef = Math.floor(statPair.def * itemDefMod * weatherDefMod * ruinDefMod);
@@ -220,7 +233,7 @@ export function calculateDamage(
   // 5. 기본 데미지
   const baseDmg = calcBaseDamage(attacker.level, power, finalAtk, Math.max(1, finalDef));
 
-  // 6. 보정값 수집 (순서: 타입상성→자속→급소→랜덤→화상→도구→특성→기타)
+  // 6. 보정값 수집
   // 테라스탈 방어 타입
   let defTypes = defender.types;
   if (defender.teraActive && defender.teraType && defender.teraType !== "stellar") {
@@ -236,10 +249,15 @@ export function calculateDamage(
     attacker.ability, effectiveMoveType, move.category as "physical" | "special",
     power, move, effectiveness, field.weather, attacker.status
   );
-  const defAbilityMod = getDefenderAbilityMod(
-    defender.ability, effectiveMoveType, move.category as "physical" | "special",
-    effectiveness, move, defender.currentHP, defHP
-  );
+
+  // 틀깨기: 방어측 특성 무시
+  const defAbilityMod = breaksMold
+    ? 1.0
+    : getDefenderAbilityMod(
+        defender.ability, effectiveMoveType, move.category as "physical" | "special",
+        effectiveness, move, defender.currentHP, defHP
+      );
+
   const screenMod = getScreenMod(field.screens, move.category as "physical" | "special", field.isDouble, field.isCrit);
   const spreadMod = getDoubleMod(move.isSpread, field.isDouble);
   const weatherMod = getWeatherMod(field.weather, effectiveMoveType);
@@ -303,7 +321,6 @@ export function calculateDamage(
     let totalMin = 0;
     let totalMax = 0;
 
-    // 타수별 위력이 다른 경우 (트리플악셀 등)
     const hitCount = multiHitInfo.powerPerHit
       ? multiHitInfo.powerPerHit.length
       : multiHitInfo.maxHits;
@@ -377,7 +394,7 @@ export interface SpeedResult {
   defenderSpeed: number;
   attackerPriority: number;
   defenderPriority: number;
-  reason: string; // 판정 이유
+  reason: string;
 }
 
 export function compareSpeed(
@@ -401,37 +418,44 @@ export function compareSpeed(
   defSpe = Math.floor(defSpe * getItemStatMod(defender.item, "spe"));
 
   // 마비
-  if (attacker.status === "paralysis") atkSpe = Math.floor(atkSpe * 0.5);
-  if (defender.status === "paralysis") defSpe = Math.floor(defSpe * 0.5);
+  if (attacker.status === "paralysis" && attacker.ability !== "quick-feet") {
+    atkSpe = Math.floor(atkSpe * 0.5);
+  }
+  if (defender.status === "paralysis" && defender.ability !== "quick-feet") {
+    defSpe = Math.floor(defSpe * 0.5);
+  }
 
-  // 날씨/필드 특성 스피드
-  const weatherSpeAbilities: Record<string, string> = {
-    "chlorophyll": "sun",
-    "swift-swim": "rain",
-    "sand-rush": "sand",
-    "slush-rush": "snow",
-  };
-  const terrainSpeAbilities: Record<string, string> = {
-    "surge-surfer": "electric",
-  };
-  if (weatherSpeAbilities[attacker.ability] === field.weather) atkSpe *= 2;
-  if (weatherSpeAbilities[defender.ability] === field.weather) defSpe *= 2;
-  if (terrainSpeAbilities[attacker.ability] === field.terrain) atkSpe *= 2;
-  if (terrainSpeAbilities[defender.ability] === field.terrain) defSpe *= 2;
+  // 특성 기반 스피드 보정 (날씨/필드/짐내려놓기/속보)
+  atkSpe = Math.floor(atkSpe * getSpeedAbilityMod(
+    attacker.ability, field.weather, field.terrain, attacker.status, attacker.isUnburden ?? false
+  ));
+  defSpe = Math.floor(defSpe * getSpeedAbilityMod(
+    defender.ability, field.weather, field.terrain, defender.status, defender.isUnburden ?? false
+  ));
 
   // 우선도 비교 (기술이 선택된 경우)
   if (atkPriority !== defPriority) {
+    // 트릭룸은 우선도에 영향 없음
     if (atkPriority > defPriority) {
       return { first: "attacker", attackerSpeed: atkSpe, defenderSpeed: defSpe, attackerPriority: atkPriority, defenderPriority: defPriority, reason: `우선도 +${atkPriority} > +${defPriority}` };
     }
     return { first: "defender", attackerSpeed: atkSpe, defenderSpeed: defSpe, attackerPriority: atkPriority, defenderPriority: defPriority, reason: `우선도 +${defPriority} > +${atkPriority}` };
   }
 
-  // 같은 우선도 → 스피드 비교
-  const reason = atkPriority !== 0 ? `같은 우선도(+${atkPriority}), 스피드로 판정` : "스피드 비교";
+  // 같은 우선도 → 스피드 비교 (트릭룸 시 역전)
+  const trickRoom = field.trickRoom ?? false;
+  let reason = atkPriority !== 0 ? `같은 우선도(+${atkPriority}), 스피드로 판정` : "스피드 비교";
+  if (trickRoom) reason += " (트릭룸)";
 
-  if (atkSpe > defSpe) return { first: "attacker", attackerSpeed: atkSpe, defenderSpeed: defSpe, attackerPriority: atkPriority, defenderPriority: defPriority, reason };
-  if (defSpe > atkSpe) return { first: "defender", attackerSpeed: atkSpe, defenderSpeed: defSpe, attackerPriority: atkPriority, defenderPriority: defPriority, reason };
+  if (trickRoom) {
+    // 트릭룸: 느린 쪽이 선공
+    if (atkSpe < defSpe) return { first: "attacker", attackerSpeed: atkSpe, defenderSpeed: defSpe, attackerPriority: atkPriority, defenderPriority: defPriority, reason };
+    if (defSpe < atkSpe) return { first: "defender", attackerSpeed: atkSpe, defenderSpeed: defSpe, attackerPriority: atkPriority, defenderPriority: defPriority, reason };
+  } else {
+    if (atkSpe > defSpe) return { first: "attacker", attackerSpeed: atkSpe, defenderSpeed: defSpe, attackerPriority: atkPriority, defenderPriority: defPriority, reason };
+    if (defSpe > atkSpe) return { first: "defender", attackerSpeed: atkSpe, defenderSpeed: defSpe, attackerPriority: atkPriority, defenderPriority: defPriority, reason };
+  }
+
   return { first: "tie", attackerSpeed: atkSpe, defenderSpeed: defSpe, attackerPriority: atkPriority, defenderPriority: defPriority, reason: "동속 (랜덤)" };
 }
 

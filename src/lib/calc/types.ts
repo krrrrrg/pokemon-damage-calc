@@ -83,6 +83,7 @@ export interface Pokemon {
   teraActive: boolean;
   gimmick: GimmickType;
   isGrounded: boolean; // 지면에 있는지
+  isUnburden: boolean; // 짐내려놓기 발동 여부
 }
 
 export interface Move {
@@ -113,6 +114,7 @@ export interface Field {
   isDouble: boolean;
   isHelping: boolean; // 도우미
   isCrit: boolean;
+  trickRoom: boolean; // 트릭룸
   stealth_rock: boolean;
   spikes: number; // 0~3
 }
@@ -160,6 +162,7 @@ export const DEFAULT_FIELD: Field = {
   isDouble: false,
   isHelping: false,
   isCrit: false,
+  trickRoom: false,
   stealth_rock: false,
   spikes: 0,
 };
