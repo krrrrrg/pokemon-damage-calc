@@ -44,104 +44,113 @@ export default function Home() {
   }, [defender]);
 
   return (
-    <div className="min-h-screen flex flex-col" style={{ background: "linear-gradient(180deg, #2b2d42 0%, #1a1b2e 100%)" }}>
-      {/* Header */}
+    <div
+      className="h-screen flex flex-col overflow-hidden"
+      style={{ background: "linear-gradient(180deg, #2b2d42 0%, #1a1b2e 100%)" }}
+    >
+      {/* Compact App Header */}
       <header
-        className="relative"
+        className="flex-shrink-0 flex items-center justify-between px-3 py-2 gap-2"
         style={{
           background: "linear-gradient(135deg, #e3350d 0%, #ff6b4a 50%, #f0c040 100%)",
-          boxShadow: "0 4px 20px rgba(227, 53, 13, 0.3)",
-          borderBottom: "4px solid #b71c1c",
+          borderBottom: "3px solid #b71c1c",
+          boxShadow: "0 2px 8px rgba(0,0,0,0.2)",
         }}
       >
-        <div className="max-w-7xl mx-auto flex items-center justify-between px-4 py-4 gap-3">
-          <div className="flex items-center gap-3 flex-1 min-w-0">
-            <img
-              src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/versions/generation-v/black-white/animated/25.gif"
-              alt="Pikachu"
-              className="hidden sm:block flex-shrink-0"
-              style={{
-                width: 64,
-                height: 64,
-                imageRendering: "pixelated",
-                filter: "drop-shadow(2px 3px 0 rgba(0,0,0,0.25))",
-              }}
-            />
-            <img
-              src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/25.png"
-              alt="Pikachu"
-              className="sm:hidden flex-shrink-0"
-              style={{
-                width: 52,
-                height: 52,
-                imageRendering: "pixelated",
-                filter: "drop-shadow(2px 3px 0 rgba(0,0,0,0.25))",
-              }}
-            />
-            <div className="flex flex-col min-w-0">
-              <h1
-                className="text-xl sm:text-2xl tracking-wide truncate"
-                style={{
-                  color: "#fff",
-                  textShadow: "0 2px 0 #b71c1c, 0 3px 6px rgba(0,0,0,0.3)",
-                  letterSpacing: "1px",
-                }}
-              >
-                포켓몬 데미지 계산기
-              </h1>
-              <span
-                className="text-xs sm:text-sm hidden sm:block"
-                style={{ color: "rgba(255,255,255,0.85)", textShadow: "0 1px 2px rgba(0,0,0,0.3)" }}
-              >
-                POKEMON DAMAGE CALCULATOR
-              </span>
-            </div>
-          </div>
+        <div className="flex items-center gap-2 flex-shrink-0">
+          <img
+            src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/versions/generation-v/black-white/animated/25.gif"
+            alt="Pikachu"
+            style={{
+              width: 38,
+              height: 38,
+              imageRendering: "pixelated",
+              filter: "drop-shadow(1px 2px 0 rgba(0,0,0,0.25))",
+            }}
+          />
+          <h1
+            className="text-lg font-bold"
+            style={{
+              color: "#fff",
+              textShadow: "0 2px 0 #b71c1c",
+              letterSpacing: "0.5px",
+            }}
+          >
+            데미지 계산기
+          </h1>
+        </div>
 
-          <div className="flex items-center gap-2 flex-shrink-0">
-            <Link
-              href="/wiki"
-              className="text-sm px-3 py-2 hidden sm:inline-flex"
+        <div className="flex items-center gap-2 flex-shrink-0">
+          <Link
+            href="/wiki"
+            className="flex items-center justify-center"
+            title="위키"
+            style={{
+              width: 40,
+              height: 40,
+              background: "rgba(255,255,255,0.25)",
+              borderRadius: 10,
+              border: "2px solid rgba(255,255,255,0.4)",
+              fontSize: 20,
+            }}
+          >
+            📖
+          </Link>
+          <div
+            className="flex items-center"
+            style={{
+              background: "rgba(0,0,0,0.2)",
+              borderRadius: 10,
+              border: "2px solid rgba(255,255,255,0.2)",
+              overflow: "hidden",
+            }}
+          >
+            <button
+              onClick={() => setGameMode("standard")}
+              title="본편 모드"
               style={{
-                background: "rgba(255,255,255,0.25)",
-                borderRadius: 10,
-                color: "#fff",
-                border: "2px solid rgba(255,255,255,0.4)",
-                textShadow: "0 1px 2px rgba(0,0,0,0.3)",
+                width: 40,
+                height: 36,
+                fontSize: 16,
+                fontWeight: "bold",
+                color: gameMode === "standard" ? "#fff" : "rgba(255,255,255,0.6)",
+                background: gameMode === "standard" ? "#e3350d" : "transparent",
+                border: "none",
+                cursor: "pointer",
               }}
             >
-              📖 위키
-            </Link>
-            <div className="mode-toggle">
-              <button
-                className={gameMode === "standard" ? "active" : ""}
-                onClick={() => setGameMode("standard")}
-              >
-                본편
-              </button>
-              <button
-                className={gameMode === "champions" ? "active" : ""}
-                onClick={() => setGameMode("champions")}
-              >
-                포챔스
-              </button>
-            </div>
+              본
+            </button>
+            <button
+              onClick={() => setGameMode("champions")}
+              title="포챔스"
+              style={{
+                width: 40,
+                height: 36,
+                fontSize: 16,
+                fontWeight: "bold",
+                color: gameMode === "champions" ? "#fff" : "rgba(255,255,255,0.6)",
+                background: gameMode === "champions" ? "#e3350d" : "transparent",
+                border: "none",
+                cursor: "pointer",
+              }}
+            >
+              챔
+            </button>
           </div>
         </div>
       </header>
 
-      {/* Main */}
-      <main className="flex-1 p-3 max-w-5xl mx-auto w-full">
-        {/* Tab Navigation */}
-        <div className="tab-nav">
+      {/* Main Tab Navigation - compact */}
+      <div className="flex-shrink-0 px-2 pt-2">
+        <div className="tab-nav max-w-5xl mx-auto" style={{ marginBottom: 0 }}>
           <button
             className={`tab-nav-btn ${activeTab === "attacker" ? "active-atk" : ""}`}
             onClick={() => setActiveTab("attacker")}
           >
             <span className="tab-nav-step">1</span>
             <span className="tab-emoji">⚔️</span>
-            <span className="hidden sm:inline">공격 포켓몬</span>
-            <span className="sm:hidden">공격</span>
+            <span>공격</span>
           </button>
           <button
             className={`tab-nav-btn ${activeTab === "defender" ? "active-def" : ""}`}
@@ -149,8 +158,7 @@ export default function Home() {
           >
             <span className="tab-nav-step">2</span>
             <span className="tab-emoji">🛡️</span>
-            <span className="hidden sm:inline">방어 포켓몬</span>
-            <span className="sm:hidden">방어</span>
+            <span>방어</span>
           </button>
           <button
             className={`tab-nav-btn ${activeTab === "result" ? "active-result" : ""}`}
@@ -158,15 +166,16 @@ export default function Home() {
           >
             <span className="tab-nav-step">3</span>
             <span className="tab-emoji">📊</span>
-            <span className="hidden sm:inline">배틀 결과</span>
-            <span className="sm:hidden">결과</span>
+            <span>결과</span>
           </button>
         </div>
+      </div>
 
-        {/* Tab Contents */}
-        <div className="flex flex-col gap-3">
-          {activeTab === "attacker" && (
-            <>
+      {/* Content Area - fills remaining space */}
+      <main className="flex-1 overflow-hidden flex flex-col px-2 pb-2 pt-2 max-w-5xl w-full mx-auto">
+        {activeTab === "attacker" && (
+          <div className="flex-1 flex flex-col min-h-0 gap-2">
+            <div className="flex-1 min-h-0 overflow-auto">
               <PokemonPanel
                 label="공격"
                 pokemon={attacker}
@@ -175,19 +184,21 @@ export default function Home() {
                 onPokemonChange={setAttacker}
                 onMovesChange={setAttackerMoves}
               />
-              <button
-                className="step-next-btn to-def"
-                onClick={() => setActiveTab("defender")}
-                disabled={!attacker.name}
-                style={!attacker.name ? { opacity: 0.5, cursor: "not-allowed" } : {}}
-              >
-                🛡️ 방어 포켓몬 설정하기 →
-              </button>
-            </>
-          )}
+            </div>
+            <button
+              className="step-next-btn to-def flex-shrink-0"
+              onClick={() => setActiveTab("defender")}
+              disabled={!attacker.name}
+              style={!attacker.name ? { opacity: 0.5, cursor: "not-allowed" } : {}}
+            >
+              🛡️ 방어 포켓몬 설정 →
+            </button>
+          </div>
+        )}
 
-          {activeTab === "defender" && (
-            <>
+        {activeTab === "defender" && (
+          <div className="flex-1 flex flex-col min-h-0 gap-2">
+            <div className="flex-1 min-h-0 overflow-auto">
               <PokemonPanel
                 label="방어"
                 pokemon={defender}
@@ -196,19 +207,21 @@ export default function Home() {
                 onPokemonChange={setDefender}
                 onMovesChange={() => {}}
               />
-              <button
-                className="step-next-btn to-result"
-                onClick={() => setActiveTab("result")}
-                disabled={!defender.name}
-                style={!defender.name ? { opacity: 0.5, cursor: "not-allowed" } : {}}
-              >
-                📊 배틀 결과 확인 →
-              </button>
-            </>
-          )}
+            </div>
+            <button
+              className="step-next-btn to-result flex-shrink-0"
+              onClick={() => setActiveTab("result")}
+              disabled={!defender.name}
+              style={!defender.name ? { opacity: 0.5, cursor: "not-allowed" } : {}}
+            >
+              📊 배틀 결과 확인 →
+            </button>
+          </div>
+        )}
 
-          {activeTab === "result" && (
-            <>
+        {activeTab === "result" && (
+          <div className="flex-1 flex flex-col min-h-0 gap-2">
+            <div className="flex-1 min-h-0 overflow-auto flex flex-col gap-2">
               <FieldPanel field={field} onFieldChange={setField} />
               <ResultPanel
                 results={results}
@@ -218,39 +231,26 @@ export default function Home() {
                 physicalBulk={bulk.physical}
                 specialBulk={bulk.special}
               />
-              <div className="grid grid-cols-2 gap-2">
-                <button
-                  className="pixel-btn"
-                  onClick={() => setActiveTab("attacker")}
-                  style={{ padding: "14px", fontSize: 15 }}
-                >
-                  ⚔️ 공격 수정
-                </button>
-                <button
-                  className="pixel-btn"
-                  onClick={() => setActiveTab("defender")}
-                  style={{ padding: "14px", fontSize: 15 }}
-                >
-                  🛡️ 방어 수정
-                </button>
-              </div>
-            </>
-          )}
-        </div>
+            </div>
+            <div className="grid grid-cols-2 gap-2 flex-shrink-0">
+              <button
+                className="pixel-btn"
+                onClick={() => setActiveTab("attacker")}
+                style={{ padding: "12px" }}
+              >
+                ⚔️ 공격 수정
+              </button>
+              <button
+                className="pixel-btn"
+                onClick={() => setActiveTab("defender")}
+                style={{ padding: "12px" }}
+              >
+                🛡️ 방어 수정
+              </button>
+            </div>
+          </div>
+        )}
       </main>
-
-      {/* Footer */}
-      <footer className="py-4 flex flex-col items-center gap-2" style={{ borderTop: "1px solid rgba(255,255,255,0.06)" }}>
-        <div className="flex items-center gap-2 opacity-70">
-          <img src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/1.png" alt="" width={36} height={36} style={{ imageRendering: "pixelated" }} />
-          <img src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/4.png" alt="" width={36} height={36} style={{ imageRendering: "pixelated" }} />
-          <img src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/7.png" alt="" width={36} height={36} style={{ imageRendering: "pixelated" }} />
-          <img src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/25.png" alt="" width={36} height={36} style={{ imageRendering: "pixelated" }} />
-        </div>
-        <span className="text-xs" style={{ color: "rgba(255,255,255,0.4)" }}>
-          Pokemon Damage Calculator · PokeAPI + Supabase
-        </span>
-      </footer>
     </div>
   );
 }

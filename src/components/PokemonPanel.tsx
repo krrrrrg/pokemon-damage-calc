@@ -385,7 +385,7 @@ export default function PokemonPanel({
   const isAttacker = label === "공격";
 
   return (
-    <div className="pixel-panel p-3 flex flex-col gap-2.5 w-full" ref={dropdownRef}>
+    <div className="pixel-panel p-3 flex flex-col gap-2 w-full" ref={dropdownRef}>
       {/* 헤더 */}
       <div className="flex items-center justify-between mb-1">
         <div className={isAttacker ? "panel-header-atk" : "panel-header-def"}>
@@ -445,39 +445,54 @@ export default function PokemonPanel({
         </div>
       )}
 
-      {/* 스프라이트 + 타입 + HP */}
+      {/* 스프라이트 + 타입 + HP + 레벨 (컴팩트) */}
       {pokemon.name && (
-        <div className="flex items-center gap-3 py-2 px-2 rounded-lg"
+        <div className="flex items-center gap-2 p-2 rounded-lg"
              style={{ background: "linear-gradient(135deg, #fff8e7 0%, #fefcf3 100%)", border: "2px solid #e8dcb0" }}>
-          <div className="sprite-container flex-shrink-0">
+          <div
+            className="flex-shrink-0 rounded-lg flex items-center justify-center"
+            style={{
+              width: 72, height: 72,
+              background: "radial-gradient(circle at 50% 60%, #f5f0e1 0%, #e8e0d0 60%, #d4c89a 100%)",
+              border: "2px solid #d4c89a",
+              overflow: "hidden",
+            }}
+          >
             {spriteUrl && (
               <img
                 src={spriteUrl}
                 alt={searchQuery || pokemon.name}
-                className="w-24 h-24"
-                style={{ imageRendering: "pixelated", position: "relative", zIndex: 1, filter: "drop-shadow(2px 3px 0 rgba(0,0,0,0.15))" }}
+                style={{ width: 68, height: 68, imageRendering: "pixelated", filter: "drop-shadow(1px 2px 0 rgba(0,0,0,0.15))" }}
                 onError={(e) => { (e.target as HTMLImageElement).style.display = "none"; }}
               />
             )}
           </div>
           <div className="flex flex-col gap-1 flex-1 min-w-0">
-            <div className="text-sm font-bold truncate" style={{ color: "#3b2d1b" }}>
-              {searchQuery || pokemon.name}
+            <div className="flex items-center justify-between gap-2">
+              <div className="text-sm font-bold truncate" style={{ color: "#3b2d1b" }}>
+                {searchQuery || pokemon.name}
+              </div>
+              <div className="flex items-center gap-1 flex-shrink-0">
+                <span className="text-xs" style={{ color: "#8b7e6a" }}>Lv</span>
+                <input
+                  className="pixel-input text-center"
+                  type="number" min={1} max={100}
+                  style={{ width: 52, padding: "4px 6px", fontSize: 14 }}
+                  value={pokemon.level}
+                  onChange={(e) => updateAndRecalc({ level: Number(e.target.value) || 50 })}
+                />
+              </div>
             </div>
             <div className="flex gap-1 flex-wrap">
               <TypeBadge type={pokemon.types[0]} />
               {pokemon.types[1] && <TypeBadge type={pokemon.types[1]} />}
             </div>
-            {/* HP 바 */}
-            <div className="flex items-center gap-2 mt-1">
-              <span className="text-[10px]" style={{ color: "#8b7e6a" }}>HP</span>
+            <div className="flex items-center gap-1.5">
+              <span className="text-xs" style={{ color: "#8b7e6a", minWidth: 20 }}>HP</span>
               <div className="hp-bar flex-1" style={{ height: 10 }}>
-                <div
-                  className="hp-bar-fill hp-green"
-                  style={{ width: "100%" }}
-                />
+                <div className="hp-bar-fill hp-green" style={{ width: "100%" }} />
               </div>
-              <span className="text-[11px] font-bold" style={{ color: "#3b2d1b" }}>
+              <span className="text-xs font-bold" style={{ color: "#3b2d1b", minWidth: 32, textAlign: "right" }}>
                 {actualStats.hp}
               </span>
             </div>
@@ -485,18 +500,18 @@ export default function PokemonPanel({
         </div>
       )}
 
-      {/* 레벨 */}
-      <div className="flex items-center gap-2">
-        <label className="text-xs" style={{ color: "#8b7e6a" }}>레벨</label>
-        <input
-          className="pixel-input w-20 text-center"
-          type="number"
-          min={1}
-          max={100}
-          value={pokemon.level}
-          onChange={(e) => updateAndRecalc({ level: Number(e.target.value) || 50 })}
-        />
-      </div>
+      {/* 포켓몬 미선택 상태일 때만 레벨 노출 */}
+      {!pokemon.name && (
+        <div className="flex items-center gap-2">
+          <label className="text-xs" style={{ color: "#8b7e6a" }}>레벨</label>
+          <input
+            className="pixel-input w-20 text-center"
+            type="number" min={1} max={100}
+            value={pokemon.level}
+            onChange={(e) => updateAndRecalc({ level: Number(e.target.value) || 50 })}
+          />
+        </div>
+      )}
 
       {/* 서브탭 네비게이션 */}
       <div className="sub-tab-nav">
